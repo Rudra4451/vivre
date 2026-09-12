@@ -1,6 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { StarmapCanvas } from "@/components/starmap/StarmapCanvas";
+import { StarMapShell } from "@/components/starmap/StarMapShell";
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
 import { QuestBoardHeader } from "@/components/quest/QuestBoardHeader";
 import { QuestBoard } from "@/components/quest/QuestBoard";
@@ -127,7 +127,12 @@ export default async function CommandDeckPage() {
               </span>
             </div>
             <div className="h-[280px] w-full bg-[var(--atlas-bg)]">
-              <StarmapCanvas />
+              <StarMapShell
+                attributes={attributes ?? []}
+                level={defaultProfile.level}
+                currentXp={defaultProfile.current_xp}
+                username={defaultProfile.username ?? undefined}
+              />
             </div>
           </Card>
 

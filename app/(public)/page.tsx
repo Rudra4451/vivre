@@ -2,20 +2,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { LandingHeroVisualizer } from "@/components/starmap/LandingHeroVisualizer";
 
 export default function PublicLandingPage() {
   return (
     <div className="relative isolate overflow-hidden py-16 sm:py-24">
-      {/* Background Cartographic Star Chart Grid Elements */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center opacity-10"
-        aria-hidden="true"
-      >
-        <div className="h-[600px] w-[600px] rounded-full border border-[var(--atlas-line)] [mask-image:radial-gradient(circle,black,transparent_70%)]" />
-        <div className="absolute h-[420px] w-[420px] rounded-full border border-dashed border-[var(--atlas-line)]" />
-        <div className="absolute h-[800px] w-px bg-[var(--atlas-line)]" />
-        <div className="absolute w-[800px] h-px bg-[var(--atlas-line)]" />
-      </div>
+      {/* Background Cinematic Astrolabe (Lazy loaded separately, under 1.2k triangles) */}
+      <LandingHeroVisualizer />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">

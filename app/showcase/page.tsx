@@ -24,6 +24,7 @@ import { useUIStore } from "@/lib/game/store";
 import { AtlasAudio } from "@/lib/game/audio";
 import { AtlasAnnounce, useAnnouncementStore } from "@/lib/game/announcements";
 import { useMotionPreferences } from "@/lib/game/motion-config";
+import { StarMapShell } from "@/components/starmap/StarMapShell";
 
 export default function ShowcasePage() {
   const { theme, resolvedTheme } = useTheme();
@@ -831,6 +832,83 @@ export default function ShowcasePage() {
             )}
           </div>
         </Card>
+      </section>
+
+      {/* ------------------------------------------------------------------------ */}
+      {/* 6. STAR ATLAS: 3D WEBGL & DEMAND RENDERING                              */}
+      {/* ------------------------------------------------------------------------ */}
+      <section className="space-y-6">
+        <div className="border-b border-[var(--atlas-line)] pb-4">
+          <Badge variant="reward" size="sm" className="mb-2 font-mono">
+            SECTION 06 · WEBGL ARCHITECTURE
+          </Badge>
+          <h2 className="font-display text-2xl font-bold text-[var(--atlas-ink)]">
+            Performant Constellation Atlas
+          </h2>
+          <p className="mt-1 text-xs text-[var(--atlas-muted)] max-w-2xl">
+            R3F Canvas using <code className="text-sky-400 font-mono">frameloop=&quot;demand&quot;</code>. Zero idle loop CPU drain. Adaptive DPR (desktop vs mobile), under 1,000 triangles, 10-15 draw calls, and instant static SVG/CSS fallback when WebGL fails, offscreen, or calm mode is enabled.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          {/* Active 3D Starmap */}
+          <Card className="p-0 overflow-hidden">
+            <div className="p-4 border-b border-[var(--atlas-line)] bg-[var(--atlas-surface)] flex items-center justify-between">
+              <div>
+                <h3 className="font-display text-sm font-semibold text-[var(--atlas-ink)]">
+                  Active Star Atlas (Demand Rendered)
+                </h3>
+                <p className="text-[11px] text-[var(--atlas-muted)]">
+                  Drag to rotate. Dev Telemetry HUD visible in development.
+                </p>
+              </div>
+              <Badge variant="outline" size="sm">
+                frameloop=&quot;demand&quot;
+              </Badge>
+            </div>
+            <div className="h-[320px] w-full bg-[var(--atlas-bg)]">
+              <StarMapShell
+                level={4}
+                attributes={[
+                  { name: "Body", value: 30 },
+                  { name: "Mind", value: 45 },
+                  { name: "Discipline", value: 50 },
+                  { name: "Craft", value: 20 },
+                  { name: "Spirit", value: 35 },
+                ]}
+              />
+            </div>
+          </Card>
+
+          {/* Static SVG/CSS Fallback Preview */}
+          <Card className="p-0 overflow-hidden">
+            <div className="p-4 border-b border-[var(--atlas-line)] bg-[var(--atlas-surface)] flex items-center justify-between">
+              <div>
+                <h3 className="font-display text-sm font-semibold text-[var(--atlas-ink)]">
+                  Cartographic Static Fallback Preview
+                </h3>
+                <p className="text-[11px] text-[var(--atlas-muted)]">
+                  Identical visual identity without WebGL / GPU overhead.
+                </p>
+              </div>
+              <Badge variant="outline" size="sm">
+                Static SVG/CSS
+              </Badge>
+            </div>
+            <div className="h-[320px] w-full bg-[var(--atlas-bg)]">
+              <StarMapShell
+                level={4}
+                attributes={[
+                  { name: "Body", value: 30 },
+                  { name: "Mind", value: 45 },
+                  { name: "Discipline", value: 50 },
+                  { name: "Craft", value: 20 },
+                  { name: "Spirit", value: 35 },
+                ]}
+              />
+            </div>
+          </Card>
+        </div>
       </section>
     </div>
   );
