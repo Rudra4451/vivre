@@ -12,7 +12,7 @@ interface NavbarProps {
 
 export function Navbar({ isAuthenticated = false }: NavbarProps) {
   const router = useRouter();
-  const { soundEnabled, toggleSound } = useUIStore();
+  const { soundEnabled, toggleSound, calmMode, toggleCalmMode } = useUIStore();
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -47,9 +47,24 @@ export function Navbar({ isAuthenticated = false }: NavbarProps) {
           </nav>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3">
           {/* Celestial Theme Toggle */}
           <ThemeToggle />
+
+          {/* Calm Mode Global Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleCalmMode}
+            aria-label="Toggle calm mode animation reduction"
+            className={`hidden md:inline-flex text-xs ${
+              calmMode
+                ? "border border-atlas-reward/40 bg-atlas-reward-subtle text-atlas-reward font-semibold"
+                : "text-atlas-muted hover:text-atlas-ink"
+            }`}
+          >
+            {calmMode ? "🌿 Calm: On" : "🌿 Calm: Off"}
+          </Button>
 
           <Button
             variant="ghost"

@@ -18,6 +18,12 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { QuestCard } from "@/components/quest/QuestCard";
 import { QuestBoardHeader } from "@/components/quest/QuestBoardHeader";
+import { QuestCompletionEffect } from "@/components/quest/QuestCompletionEffect";
+import { useQuestBoardStore } from "@/lib/game/quest-board-store";
+import { useUIStore } from "@/lib/game/store";
+import { AtlasAudio } from "@/lib/game/audio";
+import { AtlasAnnounce, useAnnouncementStore } from "@/lib/game/announcements";
+import { useMotionPreferences } from "@/lib/game/motion-config";
 
 export default function ShowcasePage() {
   const { theme, resolvedTheme } = useTheme();
@@ -30,6 +36,14 @@ export default function ShowcasePage() {
   const [selectedCategory, setSelectedCategory] = React.useState("mind");
   const [inputError, setInputError] = React.useState<string | undefined>(undefined);
   const [demoProgress, setDemoProgress] = React.useState(68);
+  const [testCompletionNormal, setTestCompletionNormal] = React.useState(false);
+  const [testCompletionCritical, setTestCompletionCritical] = React.useState(false);
+
+  const { shouldReduceMotion, isCalmMode, soundEnabled } = useMotionPreferences();
+  const toggleCalmMode = useUIStore((s) => s.toggleCalmMode);
+  const toggleSound = useUIStore((s) => s.toggleSound);
+  const setCelebration = useQuestBoardStore((s) => s.setCelebration);
+  const announcementHistory = useAnnouncementStore((s) => s.history);
 
   const tokens = [
     { name: "--atlas-bg", label: "Atlas Background", desc: "Base canvas plane", cssVar: "var(--atlas-bg)" },
@@ -597,6 +611,226 @@ export default function ShowcasePage() {
             </div>
           </div>
         </Modal>
+      </section>
+
+      {/* 10. Motion System & Accessible Feedback */}
+      <section className="space-y-6 border-t border-[var(--atlas-line)] pt-10">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="font-display text-2xl font-bold text-[var(--atlas-ink)]">
+              10. Motion System & Accessible Feedback
+            </h2>
+            <p className="text-xs text-[var(--atlas-muted)] mt-1">
+              Framer Motion transitions, procedural harmonic Web Audio, and screen reader live regions.
+            </p>
+          </div>
+
+          {/* Live Status Indicators & Toggles */}
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge
+              variant={shouldReduceMotion ? "warning" : "default"}
+              size="sm"
+            >
+              Reduced Motion: {shouldReduceMotion ? "Active" : "Normal"}
+            </Badge>
+
+            <Button
+              size="sm"
+              variant={isCalmMode ? "reward" : "outline"}
+              onClick={toggleCalmMode}
+              className="text-xs"
+            >
+              {isCalmMode ? "🌿 Calm Mode: ON" : "🌿 Calm Mode: OFF"}
+            </Button>
+
+            <Button
+              size="sm"
+              variant={soundEnabled ? "secondary" : "outline"}
+              onClick={toggleSound}
+              className="text-xs"
+            >
+              {soundEnabled ? "🔊 Sound: ON" : "🔇 Sound: MUTED"}
+            </Button>
+          </div>
+        </div>
+
+        {/* Motion Testbed Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Normal Completion Test Card */}
+          <Card className="relative overflow-hidden p-5 flex flex-col justify-between min-h-[190px]">
+            <QuestCompletionEffect
+              isActive={testCompletionNormal}
+              isCritical={false}
+              onAnimationEnd={() => setTestCompletionNormal(false)}
+            />
+            <div>
+              <div className="text-[10px] font-mono text-[var(--atlas-muted)] uppercase tracking-wider">
+                Normal Completion
+              </div>
+              <h3 className="font-display text-sm font-semibold text-[var(--atlas-ink)] mt-1">
+                Restrained In-Situ Motion
+              </h3>
+              <p className="text-[11px] text-[var(--atlas-muted)] mt-1.5 leading-relaxed">
+                Star appears, constellation line connects, subtle spring, and 8 radial particles (<code className="text-xs">&lt; 1s</code> duration).
+              </p>
+            </div>
+            <div className="pt-3">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="w-full text-xs"
+                onClick={() => {
+                  setTestCompletionNormal(true);
+                  AtlasAudio.playCompletion(false);
+                  AtlasAnnounce.xpGained(50, "Mind");
+                }}
+              >
+                Trigger Normal
+              </Button>
+            </div>
+          </Card>
+
+          {/* Critical Roll Completion Test Card */}
+          <Card className="relative overflow-hidden p-5 flex flex-col justify-between min-h-[190px]">
+            <QuestCompletionEffect
+              isActive={testCompletionCritical}
+              isCritical={true}
+              onAnimationEnd={() => setTestCompletionCritical(false)}
+            />
+            <div>
+              <div className="text-[10px] font-mono text-[var(--atlas-reward)] font-bold uppercase tracking-wider">
+                Critical Bonus Roll
+              </div>
+              <h3 className="font-display text-sm font-semibold text-[var(--atlas-ink)] mt-1">
+                Resonant Harmonic Treatment
+              </h3>
+              <p className="text-[11px] text-[var(--atlas-muted)] mt-1.5 leading-relaxed">
+                Dual line drawing, 12 gold particles, resonant pulse ring, and 4-tone celestial triad chime.
+              </p>
+            </div>
+            <div className="pt-3">
+              <Button
+                variant="reward"
+                size="sm"
+                className="w-full text-xs"
+                onClick={() => {
+                  setTestCompletionCritical(true);
+                  AtlasAudio.playCompletion(true);
+                  AtlasAnnounce.criticalBonus(1.5, "celestial");
+                }}
+              >
+                Trigger Critical
+              </Button>
+            </div>
+          </Card>
+
+          {/* Premium Full-Screen Level Up */}
+          <Card className="p-5 flex flex-col justify-between min-h-[190px]">
+            <div>
+              <div className="text-[10px] font-mono text-[var(--atlas-muted)] uppercase tracking-wider">
+                Ascension Moment
+              </div>
+              <h3 className="font-display text-sm font-semibold text-[var(--atlas-ink)] mt-1">
+                Full-Screen Level-Up
+              </h3>
+              <p className="text-[11px] text-[var(--atlas-muted)] mt-1.5 leading-relaxed">
+                Astrolabe alignment dial, major 9th chime, skippable with Esc / click, max 2.8s auto-advance.
+              </p>
+            </div>
+            <div className="pt-3">
+              <Button
+                variant="primary"
+                size="sm"
+                className="w-full text-xs"
+                onClick={() => {
+                  setCelebration({
+                    leveledUp: true,
+                    newLevel: 8,
+                    xpAwarded: 500,
+                    category: "Spirit",
+                    bonusRoll: "critical",
+                    multiplier: 1.5,
+                  });
+                }}
+              >
+                Launch Level-Up
+              </Button>
+            </div>
+          </Card>
+
+          {/* Streak Shield Protection */}
+          <Card className="p-5 flex flex-col justify-between min-h-[190px]">
+            <div>
+              <div className="text-[10px] font-mono text-[var(--atlas-muted)] uppercase tracking-wider">
+                Telemetry Protection
+              </div>
+              <h3 className="font-display text-sm font-semibold text-[var(--atlas-ink)] mt-1">
+                Streak Shield Trigger
+              </h3>
+              <p className="text-[11px] text-[var(--atlas-muted)] mt-1.5 leading-relaxed">
+                Protective acoustic chime and polite aria-live announcement when server consumes shield.
+              </p>
+            </div>
+            <div className="pt-3">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full text-xs"
+                onClick={() => {
+                  AtlasAudio.playStreakShield();
+                  AtlasAnnounce.streakShieldUsed(7);
+                }}
+              >
+                Deploy Shield
+              </Button>
+            </div>
+          </Card>
+        </div>
+
+        {/* Real-time Screen Reader Live Log */}
+        <Card className="p-5">
+          <div className="flex items-center justify-between border-b border-[var(--atlas-line)] pb-3">
+            <div>
+              <h3 className="font-display text-sm font-semibold text-[var(--atlas-ink)]">
+                Screen Reader Live Region Stream (aria-live)
+              </h3>
+              <p className="text-[11px] text-[var(--atlas-muted)]">
+                Real-time announcements captured for assistive technologies (aria-live=&quot;polite&quot; and aria-live=&quot;assertive&quot;).
+              </p>
+            </div>
+            <Badge variant="outline" size="sm">
+              Live Region Active
+            </Badge>
+          </div>
+
+          <div className="mt-4 space-y-2 font-mono text-xs">
+            {announcementHistory.length > 0 ? (
+              announcementHistory.slice(0, 5).map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between rounded border border-[var(--atlas-line)] bg-[var(--atlas-bg)] p-2.5"
+                >
+                  <span className="text-[var(--atlas-ink)]">
+                    &quot;{item.message}&quot;
+                  </span>
+                  <span
+                    className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border ${
+                      item.priority === "assertive"
+                        ? "border-[var(--atlas-danger)]/40 text-[var(--atlas-danger)] bg-[var(--atlas-danger)]/10"
+                        : "border-[var(--atlas-line)] text-[var(--atlas-muted)] bg-[var(--atlas-surface)]"
+                    }`}
+                  >
+                    {item.priority}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-4 text-[var(--atlas-muted)] italic text-xs">
+                No announcements dispatched yet. Click any action above to test aria-live output.
+              </div>
+            )}
+          </div>
+        </Card>
       </section>
     </div>
   );

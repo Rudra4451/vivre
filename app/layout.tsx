@@ -5,6 +5,8 @@ import { Footer } from "@/components/layout/Footer";
 import { getCurrentUser } from "@/lib/auth";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ThemeScript } from "@/components/theme/ThemeScript";
+import { AriaAnnouncer } from "@/components/ui/AriaAnnouncer";
+import { LevelUpCelebration } from "@/components/quest/LevelUpCelebration";
 import "./globals.css";
 
 const cinzel = Cinzel({
@@ -47,6 +49,8 @@ export default async function RootLayout({
       </head>
       <body className="min-h-screen bg-atlas-bg text-atlas-ink antialiased flex flex-col justify-between selection:bg-atlas-reward/20 selection:text-atlas-reward transition-colors duration-200">
         <ThemeProvider>
+          <AriaAnnouncer />
+          <LevelUpCelebration />
           <Navbar isAuthenticated={!!user} />
           <main className="flex-1">{children}</main>
           <Footer />

@@ -5,6 +5,8 @@ import type { Profile } from "@/types";
 import { useQuestBoardStore } from "@/lib/game/quest-board-store";
 import { calculateXpToNext } from "@/lib/game/progression";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { AtlasAudio } from "@/lib/game/audio";
+import { AtlasAnnounce } from "@/lib/game/announcements";
 
 export interface QuestBoardHeaderProps {
   initialProfile: Profile;
@@ -32,6 +34,16 @@ export function QuestBoardHeader({
     100,
     Math.max(0, Math.round((currentXp / Math.max(1, xpToNext)) * 100))
   );
+
+  // Announce streak shield use if authoritative server consumed it
+  const prevShield = React.useRef(streakShieldAvailable);
+  React.useEffect(() => {
+    if (prevShield.current && !streakShieldAvailable) {
+      AtlasAnnounce.streakShieldUsed(currentStreak);
+      AtlasAudio.playStreakShield();
+    }
+    prevShield.current = streakShieldAvailable;
+  }, [streakShieldAvailable, currentStreak]);
 
   return (
     <div className="rounded-xl border border-atlas-line bg-atlas-surface p-5 sm:p-6 text-atlas-ink shadow-xs">

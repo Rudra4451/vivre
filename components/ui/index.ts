@@ -9,3 +9,4 @@ export { Badge, type BadgeProps } from "./Badge";
 export { EmptyState, type EmptyStateProps } from "./EmptyState";
 export { ErrorState, type ErrorStateProps } from "./ErrorState";
 export { AttributeCard, type AttributeCardProps } from "./AttributeCard";
+export { AriaAnnouncer } from "./AriaAnnouncer";

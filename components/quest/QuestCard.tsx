@@ -6,7 +6,10 @@ import { CATEGORY_METAS, type QuestCategory } from "@/lib/game/category-guesser"
 import { completeTask } from "@/lib/game/actions";
 import { queueOfflineCompletion } from "@/lib/game/offline-queue";
 import { useQuestBoardStore } from "@/lib/game/quest-board-store";
+import { AtlasAudio } from "@/lib/game/audio";
+import { AtlasAnnounce } from "@/lib/game/announcements";
 import { Button } from "@/components/ui/Button";
+import { QuestCompletionEffect } from "./QuestCompletionEffect";
 
 export interface QuestCardProps {
   quest: Task;
@@ -28,6 +31,9 @@ export function QuestCard({
   const setActiveError = useQuestBoardStore((s) => s.setActiveError);
   const reconcileServerState = useQuestBoardStore((s) => s.reconcileServerState);
   const setCelebration = useQuestBoardStore((s) => s.setCelebration);
+
+  const [showCompletionEffect, setShowCompletionEffect] = React.useState(false);
+  const [isCriticalRoll, setIsCriticalRoll] = React.useState(false);
 
   const isCompleting = !!completingTaskIds[quest.id];
   const isPendingSync = !!pendingSyncTaskIds[quest.id];
@@ -61,7 +67,7 @@ export function QuestCard({
     }
 
     try {
-      // 3. Call Server Action with idempotency key
+      // 3. Call Server Action with idempotency key (Animation DOES NOT start yet)
       const response = await completeTask({
         taskId: quest.id,
         idempotencyKey,
@@ -75,22 +81,39 @@ export function QuestCard({
 
       const authoritativeState = response.data;
 
-      // 4. Reconcile strictly using authoritative server response (No client math!)
+      // 4. Authoritative state transition confirmed! Now trigger sound and motion
+      const isCritical = authoritativeState.bonus_roll !== "base";
+      setIsCriticalRoll(isCritical);
+      setShowCompletionEffect(true);
+
+      // Play restrained procedural audio chime
+      AtlasAudio.playCompletion(isCritical);
+
+      // Accessible screen-reader announcements
+      AtlasAnnounce.xpGained(authoritativeState.xp_awarded, quest.category);
+      if (isCritical) {
+        AtlasAnnounce.criticalBonus(
+          authoritativeState.multiplier ?? 1.0,
+          authoritativeState.bonus_roll
+        );
+      }
+
+      // 5. Reconcile strictly using authoritative server response (No client math!)
       reconcileServerState(authoritativeState);
       onCompletionReconciled?.(authoritativeState);
 
-      // 5. Open 5-second server-authoritative Undo window
+      // 6. Open 5-second server-authoritative Undo window
       if (authoritativeState.completion_id && !authoritativeState.is_duplicate) {
         setUndo(authoritativeState.completion_id, quest.id, 5000);
       }
 
-      // 6. Trigger celebration if leveled up or gained XP
-      if (authoritativeState.xp_awarded > 0 || authoritativeState.leveled_up) {
+      // 7. Trigger level-up celebration ONLY if authoritative server confirmed it
+      if (authoritativeState.leveled_up) {
         setCelebration({
           xpAwarded: authoritativeState.xp_awarded,
           bonusRoll: authoritativeState.bonus_roll,
           multiplier: authoritativeState.multiplier,
-          leveledUp: authoritativeState.leveled_up,
+          leveledUp: true,
           newLevel: authoritativeState.level,
           category: quest.category,
         });
@@ -113,6 +136,13 @@ export function QuestCard({
           : "border-atlas-line bg-atlas-surface hover:border-atlas-muted/60 hover:bg-atlas-surface-hover shadow-xs"
       }`}
     >
+      {/* In-situ Completion Motion (Star, Line, Particle Burst) */}
+      <QuestCompletionEffect
+        isActive={showCompletionEffect}
+        isCritical={isCriticalRoll}
+        onAnimationEnd={() => setShowCompletionEffect(false)}
+      />
+
       <div>
         {/* Top Badges */}
         <div className="flex items-center justify-between gap-2 mb-2.5">
