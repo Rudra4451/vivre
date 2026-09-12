@@ -108,16 +108,16 @@ export function QuestBoard({
       {/* Main Quest Board */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-bold text-slate-100 tracking-tight">
+          <div className="flex items-center gap-2.5">
+            <h2 className="font-display text-lg font-bold text-atlas-ink tracking-wide">
               Active Objectives
             </h2>
-            <span className="font-mono text-xs text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-full">
+            <span className="font-mono text-xs text-atlas-ink bg-atlas-surface-elevated border border-atlas-line px-2 py-0.5 rounded">
               {tasks.length} Total
             </span>
           </div>
 
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-atlas-muted font-mono">
             Top {Math.min(7, prioritizedQuests.length)} prioritized
           </span>
         </div>

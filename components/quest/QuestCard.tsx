@@ -6,6 +6,7 @@ import { CATEGORY_METAS, type QuestCategory } from "@/lib/game/category-guesser"
 import { completeTask } from "@/lib/game/actions";
 import { queueOfflineCompletion } from "@/lib/game/offline-queue";
 import { useQuestBoardStore } from "@/lib/game/quest-board-store";
+import { Button } from "@/components/ui/Button";
 
 export interface QuestCardProps {
   quest: Task;
@@ -48,7 +49,6 @@ export function QuestCard({
     const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
     if (isOffline) {
-      // Offline mode: queue in IndexedDB, show "Pending sync"
       try {
         await queueOfflineCompletion(quest.id, idempotencyKey);
         setPendingSync(quest.id, true);
@@ -68,7 +68,6 @@ export function QuestCard({
       });
 
       if (!response.success || !response.data) {
-        // Rollback completing state and show retryable error
         setActiveError(response.error ?? "Failed to complete quest.");
         finishCompleting(quest.id);
         return;
@@ -106,31 +105,30 @@ export function QuestCard({
 
   return (
     <div
-      className={`group relative flex flex-col justify-between rounded-2xl border p-4 sm:p-5 backdrop-blur-md transition-all duration-300 ${
+      className={`group relative flex flex-col justify-between rounded-xl border p-5 transition-all duration-200 ${
         isCompleting
-          ? "border-emerald-500/60 bg-emerald-950/20 shadow-[0_0_25px_rgba(16,185,129,0.2)] scale-[0.99]"
+          ? "border-atlas-line-subtle bg-atlas-surface-elevated scale-[0.99] ring-1 ring-atlas-line"
           : isCompletedToday
-          ? "border-slate-800/40 bg-slate-950/40 opacity-60"
-          : "border-slate-800/80 bg-slate-900/40 hover:border-slate-700 hover:bg-slate-900/70 hover:shadow-lg"
+          ? "border-atlas-line/40 bg-atlas-surface/50 opacity-60"
+          : "border-atlas-line bg-atlas-surface hover:border-atlas-muted/60 hover:bg-atlas-surface-hover shadow-xs"
       }`}
     >
       <div>
         {/* Top Badges */}
         <div className="flex items-center justify-between gap-2 mb-2.5">
-          <span
-            className={`inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-lg border ${meta.badgeBg} ${meta.badgeBorder} ${meta.badgeText}`}
-          >
+          <span className="inline-flex items-center gap-1 text-[11px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded border border-atlas-line bg-atlas-surface-elevated text-atlas-ink">
             <span>{meta.icon}</span>
             <span>{category}</span>
           </span>
 
           <div className="flex items-center gap-1.5">
             {isPendingSync && (
-              <span className="text-[10px] font-mono uppercase bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-mono uppercase bg-atlas-surface-elevated border border-atlas-warning/40 text-atlas-warning px-2 py-0.5 rounded">
                 Pending Sync
               </span>
             )}
-            <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+            {/* Gold strictly for reward metric */}
+            <span className="text-[11px] font-mono text-atlas-reward bg-atlas-reward-subtle px-2 py-0.5 rounded border border-atlas-reward/40 font-bold">
               +{meta.baseXp} XP
             </span>
           </div>
@@ -138,50 +136,46 @@ export function QuestCard({
 
         {/* Quest Title */}
         <h3
-          className={`text-base font-semibold transition-colors ${
+          className={`font-display text-base font-bold transition-colors leading-snug ${
             isCompletedToday
-              ? "line-through text-slate-500"
-              : "text-slate-100 group-hover:text-white"
+              ? "line-through text-atlas-muted"
+              : "text-atlas-ink"
           }`}
         >
           {quest.title}
         </h3>
 
         {quest.is_recurring && (
-          <span className="inline-block mt-1 text-[11px] text-slate-500">
-            🔄 Recurring Routine
+          <span className="inline-block mt-1 text-[11px] font-mono text-atlas-muted">
+            ↺ Recurring Routine
           </span>
         )}
       </div>
 
       {/* Bottom Completion Action */}
-      <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between">
-        <span className="text-xs text-slate-500 font-mono">
+      <div className="mt-5 pt-3.5 border-t border-atlas-line-subtle flex items-center justify-between">
+        <span className="text-[11px] text-atlas-muted font-mono">
           {isCompletedToday
-            ? "Status: Resolved Today"
+            ? "Resolved Today"
             : isCompleting
             ? "Transmitting..."
             : isPendingSync
             ? "Queued Offline"
-            : "Status: Active"}
+            : "Active Objective"}
         </span>
 
-        <button
+        <Button
           type="button"
+          size="sm"
+          variant={isCompletedToday ? "outline" : "secondary"}
           onClick={handleComplete}
           disabled={isLocked}
           aria-label={`Complete quest: ${quest.title}`}
-          className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-emerald-400 ${
-            isCompletedToday
-              ? "bg-slate-800/50 text-slate-500 cursor-not-allowed border border-slate-700/40"
-              : isCompleting
-              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-wait animate-pulse"
-              : "bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 text-emerald-300 hover:from-emerald-500 hover:to-teal-500 hover:text-white hover:border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.15)]"
-          }`}
+          className="text-xs"
         >
           {isCompleting ? (
             <>
-              <span className="h-3 w-3 rounded-full border-2 border-emerald-400/30 border-t-emerald-400 animate-spin" />
+              <span className="h-3 w-3 rounded-full border-2 border-atlas-ink/30 border-t-atlas-ink animate-spin" />
               <span>Verifying...</span>
             </>
           ) : isCompletedToday ? (
@@ -195,7 +189,7 @@ export function QuestCard({
               <span>Complete</span>
             </>
           )}
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -1,17 +1,15 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+  engraved?: boolean;
 }
 
-export function Card({ className, children, ...props }: CardProps) {
+export function Card({ className = "", engraved = false, children, ...props }: CardProps) {
   return (
     <div
-      className={cn(
-        "rounded-xl border border-slate-800 bg-slate-900/60 p-6 backdrop-blur-md shadow-xl text-slate-100",
-        className
-      )}
+      className={`rounded-xl border border-atlas-line bg-atlas-surface p-5 sm:p-6 text-atlas-ink shadow-xs transition-colors ${
+        engraved ? "relative before:absolute before:inset-0 before:border before:border-atlas-line-subtle before:m-1 before:rounded-lg before:pointer-events-none" : ""
+      } ${className}`}
       {...props}
     >
       {children}
@@ -20,25 +18,25 @@ export function Card({ className, children, ...props }: CardProps) {
 }
 
 export function CardHeader({
-  className,
+  className = "",
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("mb-4 flex flex-col space-y-1.5", className)} {...props}>
+    <div className={`flex flex-col space-y-1.5 pb-4 border-b border-atlas-line-subtle ${className}`} {...props}>
       {children}
     </div>
   );
 }
 
 export function CardTitle({
-  className,
+  className = "",
   children,
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-lg font-semibold tracking-tight text-slate-100", className)}
+      className={`font-display text-lg font-bold tracking-tight text-atlas-ink ${className}`}
       {...props}
     >
       {children}
@@ -47,13 +45,25 @@ export function CardTitle({
 }
 
 export function CardDescription({
-  className,
+  className = "",
   children,
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-sm text-slate-400", className)} {...props}>
+    <p className={`text-xs text-atlas-muted leading-relaxed ${className}`} {...props}>
       {children}
     </p>
+  );
+}
+
+export function CardContent({
+  className = "",
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={`pt-4 ${className}`} {...props}>
+      {children}
+    </div>
   );
 }

@@ -4,6 +4,7 @@ import { StarmapCanvas } from "@/components/starmap/StarmapCanvas";
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
 import { QuestBoardHeader } from "@/components/quest/QuestBoardHeader";
 import { QuestBoard } from "@/components/quest/QuestBoard";
+import { Badge } from "@/components/ui/Badge";
 import { getLocalDateString } from "@/lib/game/progression";
 
 export default async function CommandDeckPage() {
@@ -72,24 +73,24 @@ export default async function CommandDeckPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800/80 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[var(--atlas-line)] pb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-2.5">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[var(--atlas-ink)] flex items-center gap-2.5">
             <span>Command Deck</span>
-            <span className="text-xs font-mono uppercase bg-sky-500/10 text-sky-400 border border-sky-500/30 px-2.5 py-0.5 rounded-full">
-              Flight Ready
-            </span>
+            <Badge variant="outline" size="sm">
+              Charted
+            </Badge>
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
-            Authoritative telemetry, daily quest directives, and navigation starmap.
+          <p className="mt-1 text-sm text-[var(--atlas-muted)]">
+            Authoritative telemetry, daily quest directives, and constellation star atlas.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3.5 py-2 text-xs">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-            <span className="text-slate-300 font-medium">
-              Pilot: {defaultProfile.username}
+          <div className="flex items-center gap-2 rounded-lg border border-[var(--atlas-line)] bg-[var(--atlas-surface)] px-3.5 py-2 text-xs">
+            <span className="h-2 w-2 rounded-full bg-[var(--atlas-success)]" />
+            <span className="text-[var(--atlas-ink)] font-medium">
+              Cartographer: {defaultProfile.username}
             </span>
           </div>
         </div>
@@ -115,47 +116,47 @@ export default async function CommandDeckPage() {
         {/* Sidebar: Starmap & Pilot Status & Attributes */}
         <div className="space-y-6">
           {/* Starmap 3D Visualizer */}
-          <Card className="overflow-hidden p-0 border-slate-800 bg-slate-950/60">
-            <div className="flex items-center justify-between p-4 border-b border-slate-800/80 bg-slate-900/40">
-              <div className="text-sm font-semibold text-slate-200 flex items-center gap-1.5">
-                <span>🌌</span>
-                <span>Starmap Visualizer</span>
+          <Card className="overflow-hidden p-0">
+            <div className="flex items-center justify-between p-4 border-b border-[var(--atlas-line)] bg-[var(--atlas-surface)]">
+              <div className="text-sm font-semibold text-[var(--atlas-ink)] flex items-center gap-1.5">
+                <span className="text-[var(--atlas-muted)]">✦</span>
+                <span className="font-display tracking-wide">Constellation Map</span>
               </div>
-              <span className="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
-                Quadrant 1
+              <span className="text-[10px] font-mono text-[var(--atlas-muted)] bg-[var(--atlas-bg)] px-2 py-0.5 rounded border border-[var(--atlas-line)]">
+                Sector I
               </span>
             </div>
-            <div className="h-[280px] w-full">
+            <div className="h-[280px] w-full bg-[var(--atlas-bg)]">
               <StarmapCanvas />
             </div>
           </Card>
 
           {/* Pilot Attributes */}
           <Card>
-            <CardTitle className="text-sky-400 text-sm flex items-center justify-between">
-              <span>Quadrant Mastery</span>
-              <span className="text-xs font-mono text-slate-400">Attributes</span>
+            <CardTitle className="text-sm font-display tracking-wider flex items-center justify-between">
+              <span>Aspect Alignment</span>
+              <span className="text-[10px] font-mono text-[var(--atlas-muted)] uppercase">Attributes</span>
             </CardTitle>
             <CardDescription className="mt-1 text-xs">
-              Direct telemetry from authoritative completion ledger
+              Discipline markers forged through completed undertakings
             </CardDescription>
 
-            <div className="mt-4 space-y-3 text-xs">
+            <div className="mt-4 space-y-2.5 text-xs">
               {attributes && attributes.length > 0 ? (
                 attributes.map((attr) => (
                   <div
                     key={attr.id}
-                    className="flex justify-between items-center border-b border-slate-800/60 pb-2 last:border-0"
+                    className="flex justify-between items-center border-b border-[var(--atlas-line)] pb-2 last:border-0"
                   >
-                    <span className="text-slate-300 font-medium">{attr.name}</span>
-                    <span className="font-mono font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded">
+                    <span className="text-[var(--atlas-ink)] font-medium">{attr.name}</span>
+                    <span className="font-mono font-semibold text-[var(--atlas-ink)] bg-[var(--atlas-bg)] border border-[var(--atlas-line)] px-2 py-0.5 rounded">
                       {attr.value}
                     </span>
                   </div>
                 ))
               ) : (
-                <div className="text-slate-500 text-center py-2">
-                  Complete your first quest to unlock attribute metrics.
+                <div className="text-[var(--atlas-muted)] text-center py-4 italic">
+                  Complete your first quest to unlock celestial alignment.
                 </div>
               )}
             </div>
@@ -165,3 +166,4 @@ export default async function CommandDeckPage() {
     </div>
   );
 }
+

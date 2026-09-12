@@ -40,14 +40,14 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md border-slate-800 bg-slate-900/70 shadow-2xl backdrop-blur-md">
+      <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-sky-400">Sign In</CardTitle>
+          <CardTitle className="text-2xl font-display">Sign In</CardTitle>
           <CardDescription>Enter your credentials to access the command deck</CardDescription>
         </CardHeader>
 
         {error && (
-          <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-400">
+          <div className="mb-4 rounded-lg border border-[var(--atlas-danger)]/30 bg-[var(--atlas-danger)]/10 p-3 text-xs text-[var(--atlas-danger)]">
             {error}
           </div>
         )}
@@ -58,7 +58,7 @@ export default function LoginPage() {
             name="email"
             label="Email Address"
             type="email"
-            placeholder="pilot@vivre.space"
+            placeholder="cartographer@vivre.space"
             required
             autoComplete="email"
           />
@@ -78,14 +78,14 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <div className="mt-6 flex flex-col items-center gap-2 text-xs text-slate-400">
-          <Link href="/reset-password" className="text-sky-400 hover:underline">
+        <div className="mt-6 flex flex-col items-center gap-2 text-xs text-[var(--atlas-muted)]">
+          <Link href="/reset-password" className="text-[var(--atlas-ink)] hover:underline">
             Forgot your password?
           </Link>
           <span>
             Need an account?{" "}
-            <Link href="/signup" className="text-sky-400 hover:underline">
-              Register your callsign
+            <Link href="/signup" className="text-[var(--atlas-ink)] font-semibold hover:underline">
+              Register callsign
             </Link>
           </span>
         </div>

@@ -47,16 +47,16 @@ export default function UpdatePasswordPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md border-slate-800 bg-slate-900/70 shadow-2xl backdrop-blur-md">
+      <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-sky-400">Set New Password</CardTitle>
+          <CardTitle className="text-2xl font-display">Update Coordinates</CardTitle>
           <CardDescription>
-            Choose a strong password for your account
+            Choose a strong passkey for your cartographer account
           </CardDescription>
         </CardHeader>
 
         {error && (
-          <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-400">
+          <div className="mb-4 rounded-lg border border-[var(--atlas-danger)]/30 bg-[var(--atlas-danger)]/10 p-3 text-xs text-[var(--atlas-danger)]">
             {error}
           </div>
         )}
@@ -82,12 +82,12 @@ export default function UpdatePasswordPage() {
             autoComplete="new-password"
           />
 
-          <p className="text-[11px] text-slate-500">
+          <p className="text-[11px] text-[var(--atlas-muted)]">
             Password must be at least 8 characters and include uppercase, lowercase, and numeric characters.
           </p>
 
           <Button type="submit" variant="primary" className="w-full" disabled={loading}>
-            {loading ? "Updating..." : "Update Password"}
+            {loading ? "Re-aligning..." : "Update Passkey"}
           </Button>
         </form>
       </Card>

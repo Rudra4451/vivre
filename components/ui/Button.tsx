@@ -1,37 +1,42 @@
-"use client";
-
 import * as React from "react";
-import { cn } from "@/lib/utils";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "reward";
   size?: "sm" | "md" | "lg";
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", children, disabled, ...props }, ref) => {
+  ({ className = "", variant = "primary", size = "md", children, disabled, ...props }, ref) => {
     const baseStyles =
-      "inline-flex items-center justify-center font-medium rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 disabled:pointer-events-none disabled:opacity-50 select-none";
-
-    const variantStyles = {
-      primary: "bg-sky-500 text-white hover:bg-sky-400 shadow-md shadow-sky-500/20 active:scale-[0.98]",
-      secondary: "bg-slate-800 text-slate-100 hover:bg-slate-700 active:scale-[0.98]",
-      outline: "border border-slate-700 bg-transparent text-slate-200 hover:bg-slate-800/60 active:scale-[0.98]",
-      ghost: "text-slate-300 hover:bg-slate-800/50 active:scale-[0.98]",
-      danger: "bg-rose-600 text-white hover:bg-rose-500 active:scale-[0.98]",
-    };
+      "inline-flex items-center justify-center font-medium transition-all duration-150 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-atlas-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-atlas-bg disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98]";
 
     const sizeStyles = {
-      sm: "h-8 px-3 text-xs",
-      md: "h-10 px-4 text-sm",
-      lg: "h-12 px-6 text-base",
+      sm: "px-3 py-1.5 text-xs gap-1.5",
+      md: "px-4 py-2 text-sm gap-2",
+      lg: "px-5 py-2.5 text-base gap-2.5 font-semibold",
+    };
+
+    const variantStyles = {
+      primary:
+        "bg-atlas-ink text-atlas-bg hover:opacity-90 shadow-sm border border-atlas-ink",
+      secondary:
+        "bg-atlas-surface text-atlas-ink border border-atlas-line hover:bg-atlas-surface-hover shadow-xs",
+      outline:
+        "border border-atlas-line text-atlas-ink hover:bg-atlas-surface bg-transparent",
+      ghost:
+        "text-atlas-muted hover:text-atlas-ink hover:bg-atlas-surface/80 bg-transparent",
+      danger:
+        "bg-atlas-danger text-white hover:opacity-90 border border-atlas-danger shadow-xs",
+      // IMPORTANT: Gold is strictly reserved for rewards, milestones, and claims
+      reward:
+        "bg-atlas-reward text-slate-950 font-semibold border border-atlas-reward hover:opacity-95 shadow-[0_0_15px_var(--atlas-reward-subtle)]",
     };
 
     return (
       <button
         ref={ref}
-        className={cn(baseStyles, variantStyles[variant], sizeStyles[size], className)}
         disabled={disabled}
+        className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}
         {...props}
       >
         {children}

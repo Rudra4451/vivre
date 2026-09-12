@@ -1,1 +1,98 @@
 @import "tailwindcss";
+
+@theme {
+  --color-atlas-bg: var(--atlas-bg);
+  --color-atlas-surface: var(--atlas-surface);
+  --color-atlas-surface-elevated: var(--atlas-surface-elevated);
+  --color-atlas-surface-hover: var(--atlas-surface-hover);
+  --color-atlas-ink: var(--atlas-ink);
+  --color-atlas-muted: var(--atlas-muted);
+  --color-atlas-line: var(--atlas-line);
+  --color-atlas-line-subtle: var(--atlas-line-subtle);
+  --color-atlas-reward: var(--atlas-reward);
+  --color-atlas-reward-subtle: var(--atlas-reward-subtle);
+  --color-atlas-success: var(--atlas-success);
+  --color-atlas-warning: var(--atlas-warning);
+  --color-atlas-danger: var(--atlas-danger);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+}
+
+/* ==========================================================================
+   CONSTELLATION ATLAS DESIGN TOKENS
+   Two legitimate visual states of one celestial object:
+   1. Night Sky (Deep Obsidian #0B0E1A)
+   2. Star Atlas (Aged Celestial Parchment #F2EDE0)
+   ========================================================================== */
+
+:root,
+.theme-night {
+  --atlas-bg: #0B0E1A;
+  --atlas-surface: #141828;
+  --atlas-surface-elevated: #1B2238;
+  --atlas-surface-hover: #222B45;
+  --atlas-ink: #F2EEE3;
+  --atlas-muted: #8E98B0;
+  --atlas-line: #252E48;
+  --atlas-line-subtle: #182035;
+  --atlas-reward: #D4A85A;
+  --atlas-reward-subtle: rgba(212, 168, 90, 0.12);
+  --atlas-success: #3E9B72;
+  --atlas-warning: #D97736;
+  --atlas-danger: #D65151;
+  color-scheme: dark;
+}
+
+.theme-atlas {
+  --atlas-bg: #F2EDE0;
+  --atlas-surface: #E8E2D2;
+  --atlas-surface-elevated: #DFD7C2;
+  --atlas-surface-hover: #D5CCB5;
+  --atlas-ink: #1B2340;
+  --atlas-muted: #5C6885;
+  --atlas-line: #D0C8B4;
+  --atlas-line-subtle: #DDD6C4;
+  --atlas-reward: #B38836;
+  --atlas-reward-subtle: rgba(179, 136, 54, 0.15);
+  --atlas-success: #287A54;
+  --atlas-warning: #B85D1A;
+  --atlas-danger: #B83535;
+  color-scheme: light;
+}
+
+/* Base resets & typography */
+html {
+  background-color: var(--atlas-bg);
+  color: var(--atlas-ink);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body {
+  background-color: var(--atlas-bg);
+  color: var(--atlas-ink);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+/* Visible accessible focus rings */
+:focus-visible {
+  outline: 2px solid var(--atlas-ink);
+  outline-offset: 2px;
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

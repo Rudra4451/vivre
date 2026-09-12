@@ -28,16 +28,19 @@ export function AllQuestsDrawer({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between rounded-xl border border-slate-800 bg-slate-900/30 px-4 py-2.5 text-xs font-semibold text-slate-300 hover:border-slate-700 hover:bg-slate-900/60 transition-all"
+        className="flex w-full items-center justify-between rounded-xl border border-atlas-line bg-atlas-surface px-4 py-2.5 text-xs font-semibold text-atlas-ink hover:bg-atlas-surface-hover transition-all"
         aria-expanded={isOpen}
       >
         <span className="flex items-center gap-2">
-          <span>Quadrant Archive</span>
-          <span className="font-mono text-[10px] bg-slate-800 text-sky-400 px-2 py-0.5 rounded-full">
-            +{remainingQuests.length} secondary quests
+          <span className="font-display">Secondary Atlas Log</span>
+          <span className="font-mono text-[10px] bg-atlas-surface-elevated border border-atlas-line text-atlas-muted px-2 py-0.5 rounded">
+            +{remainingQuests.length} directives
           </span>
         </span>
-        <span className="text-slate-400 transition-transform duration-200" style={{ transform: isOpen ? "rotate(180deg)" : "none" }}>
+        <span
+          className="text-atlas-muted transition-transform duration-200 text-[10px]"
+          style={{ transform: isOpen ? "rotate(180deg)" : "none" }}
+        >
           ▼
         </span>
       </button>

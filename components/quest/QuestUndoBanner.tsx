@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useQuestBoardStore } from "@/lib/game/quest-board-store";
 import { reverseCompletion } from "@/lib/game/actions";
+import { Button } from "@/components/ui/Button";
 
 export interface QuestUndoBannerProps {
   onUndoReconciled?: (taskId: string) => void;
@@ -57,7 +58,6 @@ export function QuestUndoBanner({ onUndoReconciled }: QuestUndoBannerProps) {
         return;
       }
 
-      // Reconcile server state
       reconcileServerState(res.data);
       onUndoReconciled?.(activeUndo.taskId);
       clearUndo();
@@ -75,32 +75,33 @@ export function QuestUndoBanner({ onUndoReconciled }: QuestUndoBannerProps) {
       aria-live="polite"
       className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4"
     >
-      <div className="relative overflow-hidden rounded-2xl border border-sky-500/40 bg-slate-900/95 p-4 backdrop-blur-xl shadow-[0_10px_35px_rgba(0,0,0,0.5)] border-t-sky-400">
+      <div className="relative overflow-hidden rounded-xl border border-atlas-line bg-atlas-surface p-4 text-atlas-ink shadow-lg transition-colors">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-sm">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-atlas-line bg-atlas-surface-elevated text-atlas-ink text-xs font-mono">
               ✓
             </span>
             <div>
-              <div className="text-sm font-semibold text-slate-100">
-                Quest Completed!
+              <div className="text-xs font-bold uppercase tracking-wider text-atlas-ink">
+                Objective Completed
               </div>
-              <div className="text-xs text-slate-400">
+              <div className="text-[11px] font-mono text-atlas-muted">
                 Authoritative record saved ({seconds}s)
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleUndo}
               disabled={isReversing}
-              className="inline-flex items-center gap-1 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 px-3.5 py-1.5 text-xs font-semibold text-white shadow-md hover:from-amber-400 hover:to-rose-400 focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:opacity-50 transition-all"
+              className="text-xs font-mono"
             >
               {isReversing ? (
                 <>
-                  <span className="h-3 w-3 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  <span className="h-3 w-3 rounded-full border-2 border-atlas-ink/30 border-t-atlas-ink animate-spin" />
                   <span>Reversing...</span>
                 </>
               ) : (
@@ -109,12 +110,12 @@ export function QuestUndoBanner({ onUndoReconciled }: QuestUndoBannerProps) {
                   <span>Undo</span>
                 </>
               )}
-            </button>
+            </Button>
 
             <button
               type="button"
               onClick={clearUndo}
-              className="text-slate-500 hover:text-slate-300 p-1 text-xs"
+              className="text-atlas-muted hover:text-atlas-ink p-1 text-xs"
               aria-label="Dismiss undo notification"
             >
               ✕
@@ -123,9 +124,9 @@ export function QuestUndoBanner({ onUndoReconciled }: QuestUndoBannerProps) {
         </div>
 
         {/* 5-second countdown progress line */}
-        <div className="absolute bottom-0 left-0 h-1 w-full bg-slate-800">
+        <div className="absolute bottom-0 left-0 h-1 w-full bg-atlas-surface-elevated">
           <div
-            className="h-full bg-gradient-to-r from-sky-400 to-indigo-500 transition-all duration-100 ease-linear"
+            className="h-full bg-atlas-ink transition-all duration-100 ease-linear"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
