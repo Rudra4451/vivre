@@ -2,14 +2,12 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { signupAction } from "./actions";
+import { resetPasswordAction } from "./actions";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 
-export default function SignupPage() {
-  const router = useRouter();
+export default function ResetPasswordPage() {
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -21,16 +19,16 @@ export default function SignupPage() {
 
     try {
       const formData = new FormData(e.currentTarget);
-      const result = await signupAction(formData);
+      const result = await resetPasswordAction(formData);
 
       if (!result.success) {
-        setError(result.error ?? "Registration failed");
+        setError(result.error ?? "Failed to send reset email");
         return;
       }
 
       setSuccess(true);
     } catch {
-      setError("An unexpected error occurred during registration.");
+      setError("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
@@ -40,8 +38,10 @@ export default function SignupPage() {
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md border-slate-800 bg-slate-900/70 shadow-2xl backdrop-blur-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-sky-400">Initialize Callsign</CardTitle>
-          <CardDescription>Register your explorer profile to enter Vivre</CardDescription>
+          <CardTitle className="text-2xl text-sky-400">Reset Password</CardTitle>
+          <CardDescription>
+            Enter your email to receive a password reset link
+          </CardDescription>
         </CardHeader>
 
         {error && (
@@ -53,28 +53,16 @@ export default function SignupPage() {
         {success ? (
           <div className="space-y-4 text-center">
             <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-400">
-              Registration request initiated! Check your email inbox to verify your account.
+              If an account with that email exists, a password reset link has been sent. Check your inbox.
             </div>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => router.push("/login")}
-            >
-              Return to Sign In
-            </Button>
+            <Link href="/login">
+              <Button variant="outline" className="w-full">
+                Return to Sign In
+              </Button>
+            </Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              id="username"
-              name="username"
-              label="Callsign (Username)"
-              type="text"
-              placeholder="Astraeus_9"
-              required
-              autoComplete="username"
-            />
-
             <Input
               id="email"
               name="email"
@@ -85,30 +73,16 @@ export default function SignupPage() {
               autoComplete="email"
             />
 
-            <Input
-              id="password"
-              name="password"
-              label="Password"
-              type="password"
-              placeholder="••••••••"
-              required
-              autoComplete="new-password"
-            />
-
-            <p className="text-[11px] text-slate-500">
-              Password must be at least 8 characters and include uppercase, lowercase, and numeric characters.
-            </p>
-
             <Button type="submit" variant="primary" className="w-full" disabled={loading}>
-              {loading ? "Registering..." : "Create Callsign"}
+              {loading ? "Sending..." : "Send Reset Link"}
             </Button>
           </form>
         )}
 
         <div className="mt-6 text-center text-xs text-slate-400">
-          Already registered?{" "}
+          Remember your password?{" "}
           <Link href="/login" className="text-sky-400 hover:underline">
-            Access Deck
+            Sign In
           </Link>
         </div>
       </Card>

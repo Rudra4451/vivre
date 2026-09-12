@@ -1,35 +1,24 @@
-import { getCurrentUser } from "@/lib/auth";
+import { requireUser } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { StarmapCanvas } from "@/components/starmap/StarmapCanvas";
-import { QuestList } from "@/components/quest/QuestList";
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
-import type { QuestDefinition } from "@/types";
-
-const mockQuests: QuestDefinition[] = [
-  {
-    id: "q-1",
-    title: "Orion Belt Signal Reconnaissance",
-    description: "Analyze anomalous radio bursts emanating from coordinates 05h 35m 17s.",
-    rewardXp: 120,
-    isCompleted: false,
-  },
-  {
-    id: "q-2",
-    title: "Cryo-Containment Calibrations",
-    description: "Verify core containment pressures and calibrate navigational sensors.",
-    rewardXp: 250,
-    isCompleted: true,
-  },
-  {
-    id: "q-3",
-    title: "Vanguard Relay Synchronization",
-    description: "Align the quantum transceivers with the orbital station cluster.",
-    rewardXp: 400,
-    isCompleted: false,
-  },
-];
 
 export default async function CommandDeckPage() {
-  const user = await getCurrentUser();
+  const user = await requireUser();
+
+  // Fetch profile data (scoped by RLS to auth.uid())
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  const { data: attributes } = await supabase
+    .from("attributes")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("name");
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
@@ -46,8 +35,15 @@ export default async function CommandDeckPage() {
           <div className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-1.5 text-xs">
             <span className="h-2 w-2 rounded-full bg-emerald-400" />
             <span className="text-slate-300">
-              Pilot: {user?.email ?? "Guest Explorer"}
+              Pilot: {profile?.username ?? user.email ?? "Explorer"}
             </span>
+          </div>
+          <div className="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-1.5 text-xs">
+            <span className="text-slate-400">Lv.</span>
+            <span className="font-mono text-sky-400">{profile?.level ?? 1}</span>
+            <span className="text-slate-600">|</span>
+            <span className="text-slate-400">XP:</span>
+            <span className="font-mono text-emerald-400">{profile?.current_xp ?? 0}</span>
           </div>
         </div>
       </div>
@@ -66,45 +62,52 @@ export default async function CommandDeckPage() {
 
         <div className="space-y-6">
           <Card>
-            <CardTitle className="text-sky-400">Telemetry Status</CardTitle>
+            <CardTitle className="text-sky-400">Pilot Status</CardTitle>
             <CardDescription className="mt-1 text-xs">
-              System health and server-authoritative integrity check
+              Current streak and resources
             </CardDescription>
 
             <div className="mt-4 space-y-3 text-xs">
               <div className="flex justify-between border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Core Sync</span>
-                <span className="font-mono text-emerald-400">Optimal</span>
+                <span className="text-slate-400">Current Streak</span>
+                <span className="font-mono text-emerald-400">{profile?.current_streak ?? 0} days</span>
               </div>
               <div className="flex justify-between border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Auth Paradigm</span>
-                <span className="font-mono text-sky-400">PKCE SSR</span>
+                <span className="text-slate-400">Longest Streak</span>
+                <span className="font-mono text-sky-400">{profile?.longest_streak ?? 0} days</span>
               </div>
               <div className="flex justify-between border-b border-slate-800 pb-2">
-                <span className="text-slate-400">Service-Role Isolation</span>
-                <span className="font-mono text-emerald-400">Enforced</span>
+                <span className="text-slate-400">Soft Currency</span>
+                <span className="font-mono text-amber-400">{profile?.soft_currency ?? 0}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Rate Limiter</span>
-                <span className="font-mono text-sky-400">Active</span>
+                <span className="text-slate-400">Rare Currency</span>
+                <span className="font-mono text-purple-400">{profile?.rare_currency ?? 0}</span>
               </div>
             </div>
           </Card>
-        </div>
-      </div>
 
-      {/* Quests Section */}
-      <div className="space-y-4 pt-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-white">Quadrant Quests</h2>
-            <p className="text-xs text-slate-400">
-              Assigned exploratory missions (presentation contracts only)
-            </p>
-          </div>
-        </div>
+          {/* Attributes */}
+          <Card>
+            <CardTitle className="text-sky-400">Attributes</CardTitle>
+            <CardDescription className="mt-1 text-xs">
+              Your character development metrics
+            </CardDescription>
 
-        <QuestList quests={mockQuests} />
+            <div className="mt-4 space-y-3 text-xs">
+              {attributes && attributes.length > 0 ? (
+                attributes.map((attr) => (
+                  <div key={attr.id} className="flex justify-between border-b border-slate-800 pb-2 last:border-0">
+                    <span className="text-slate-400">{attr.name}</span>
+                    <span className="font-mono text-sky-400">{attr.value}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-slate-500">Attributes will appear once your profile is initialized.</div>
+              )}
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );

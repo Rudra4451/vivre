@@ -1,9 +1,9 @@
 import * as React from "react";
-import type { QuestDefinition } from "@/types";
+import type { Task } from "@/types";
 import { QuestCard } from "./QuestCard";
 
 export interface QuestListProps {
-  quests: QuestDefinition[];
+  quests: Task[];
 }
 
 export function QuestList({ quests }: QuestListProps) {

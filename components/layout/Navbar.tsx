@@ -1,11 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useUIStore } from "@/lib/game/store";
 import { Button } from "@/components/ui/Button";
 
-export function Navbar() {
+interface NavbarProps {
+  isAuthenticated?: boolean;
+}
+
+export function Navbar({ isAuthenticated = false }: NavbarProps) {
+  const router = useRouter();
   const { soundEnabled, toggleSound } = useUIStore();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
@@ -21,9 +33,11 @@ export function Navbar() {
             <Link href="/" className="hover:text-slate-100 transition-colors">
               Overview
             </Link>
-            <Link href="/app" className="hover:text-slate-100 transition-colors">
-              Command Deck
-            </Link>
+            {isAuthenticated && (
+              <Link href="/app" className="hover:text-slate-100 transition-colors">
+                Command Deck
+              </Link>
+            )}
           </nav>
         </div>
 
@@ -37,16 +51,25 @@ export function Navbar() {
           >
             {soundEnabled ? "Audio: On" : "Audio: Muted"}
           </Button>
-          <Link href="/login">
-            <Button variant="ghost" size="sm">
-              Sign In
+
+          {isAuthenticated ? (
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              Sign Out
             </Button>
-          </Link>
-          <Link href="/signup">
-            <Button variant="primary" size="sm">
-              Initialize
-            </Button>
-          </Link>
+          ) : (
+            <>
+              <Link href="/login">
+                <Button variant="ghost" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button variant="primary" size="sm">
+                  Initialize
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

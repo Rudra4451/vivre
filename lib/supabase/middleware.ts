@@ -3,8 +3,10 @@ import { type NextRequest, NextResponse } from "next/server";
 import type { Database } from "@/types/database.types";
 
 /**
- * Middleware session updater.
+ * Proxy session updater.
  * Ensures auth token is refreshed and stored via cookies across requests.
+ * Returns both the response and the authenticated user (if any) so the
+ * proxy can make redirect decisions without a second getUser() call.
  */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -15,7 +17,7 @@ export async function updateSession(request: NextRequest) {
   const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (!supabaseUrl || !publishableKey) {
-    return supabaseResponse;
+    return { response: supabaseResponse, user: null };
   }
 
   const supabase = createServerClient<Database>(supabaseUrl, publishableKey, {
@@ -38,7 +40,9 @@ export async function updateSession(request: NextRequest) {
   // IMPORTANT: Do not run code between createServerClient and
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with users being randomly logged out.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  return supabaseResponse;
+  return { response: supabaseResponse, user };
 }
