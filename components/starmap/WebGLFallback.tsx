@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import type { NormalizedAttribute } from "./types";
-import { CATEGORY_COLORS } from "./starmap-math";
 import type { QuestCategory } from "@/lib/game/category-guesser";
 
 export interface WebGLFallbackProps {
@@ -14,7 +13,6 @@ export interface WebGLFallbackProps {
 
 export function WebGLFallback({
   attributes,
-  level = 1,
   reason = "unsupported",
   className = "",
 }: WebGLFallbackProps) {

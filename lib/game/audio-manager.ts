@@ -336,7 +336,7 @@ class VivreAudioManager {
         // Play was blocked by browser; invoke fallback
         playProceduralFallback(key);
       }
-    } catch (err) {
+    } catch {
       // Gracefully catch any unexpected error; attempt procedural fallback without breaking gameplay
       try {
         playProceduralFallback(key);

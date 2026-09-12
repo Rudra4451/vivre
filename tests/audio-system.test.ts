@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { AudioManager, AtlasAudio, SOUND_DEFINITIONS } from "@/lib/game/audio-manager";
 import { useUIStore } from "@/lib/game/store";
 

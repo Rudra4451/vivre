@@ -63,7 +63,7 @@ export function Constellation({
   return (
     <group onClick={handleGroupClick}>
       {/* 1. Star Nodes (5 stars per constellation) */}
-      {stars.map((star, idx) => (
+      {stars.map((star) => (
         <StarNode
           key={star.id}
           position={star.position}

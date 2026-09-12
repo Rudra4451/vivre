@@ -200,7 +200,15 @@ export async function reverseCompletion(
 }
 
 export const createTaskInputSchema = z.object({
-  title: z.string().min(1, "Title is required").max(100, "Title is too long"),
+  title: z
+    .string()
+    .trim()
+    .min(1, "Title is required")
+    .max(100, "Title cannot exceed 100 characters")
+    .refine(
+      (val) => !/[<>]/.test(val),
+      "Task title cannot contain HTML or script tags"
+    ),
   category: z.enum(["Body", "Mind", "Discipline", "Craft", "Spirit"]),
   isRecurring: z.boolean().default(false),
 });

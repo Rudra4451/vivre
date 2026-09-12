@@ -92,7 +92,7 @@ export const WeeklyRecapEmail = ({
             )}
 
             <Text style={quoteText}>
-              "The stars do not rush, yet each celestial body finds its orbit. Carry this momentum into the dawn of a new cycle."
+              &ldquo;The stars do not rush, yet each celestial body finds its orbit. Carry this momentum into the dawn of a new cycle.&rdquo;
             </Text>
 
             {/* CTA Button */}

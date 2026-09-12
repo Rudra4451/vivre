@@ -50,7 +50,7 @@ export const ComebackEmail = ({
             <Heading style={heading}>The Stars Are Calling, {displayName}</Heading>
             
             <Text style={paragraph}>
-              The cosmos shifts with each passing hour. You haven't aligned your stars today, and your{" "}
+              The cosmos shifts with each passing hour. You haven&apos;t aligned your stars today, and your{" "}
               <span style={highlight}>{streakText}</span> is in need of your guiding light.
             </Text>
 
@@ -78,7 +78,7 @@ export const ComebackEmail = ({
             </Section>
 
             <Text style={quoteText}>
-              "Every directive fulfilled is a new coordinate drawn across the void. Consistency shapes destiny."
+              &ldquo;Every directive fulfilled is a new coordinate drawn across the void. Consistency shapes destiny.&rdquo;
             </Text>
 
             {/* CTA Button */}

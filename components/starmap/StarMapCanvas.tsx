@@ -74,7 +74,7 @@ function TelemetryCollector({
   onTelemetryChange?: (telemetry: StarAtlasTelemetry) => void;
   isMobile: boolean;
 }) {
-  const { gl, viewport } = useThree();
+  const { gl } = useThree();
   const invalidationCount = React.useRef(0);
 
   React.useEffect(() => {

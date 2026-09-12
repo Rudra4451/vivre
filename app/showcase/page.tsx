@@ -29,6 +29,9 @@ import { AttributeRadarChart } from "@/components/attributes";
 import { WeeklyChallengesCard } from "@/components/challenges";
 import { CosmeticShop } from "@/components/shop";
 
+const DEMO_WEEK_START = "2026-09-13T00:00:00.000Z";
+const DEMO_WEEK_END = "2026-09-20T00:00:00.000Z";
+
 export default function ShowcasePage() {
   const { theme, resolvedTheme } = useTheme();
 
@@ -1105,8 +1108,8 @@ export default function ShowcasePage() {
             {
               id: "demo-ch-1",
               week_number: 37,
-              week_start_date: new Date().toISOString(),
-              week_end_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+              week_start_date: DEMO_WEEK_START,
+              week_end_date: DEMO_WEEK_END,
               title: "Way of Discipline",
               description: "Complete 5 Discipline quests to reinforce habits.",
               requirement_type: "category_count",
@@ -1114,7 +1117,7 @@ export default function ShowcasePage() {
               target_count: 5,
               reward_rare_currency: 15,
               is_active: true,
-              created_at: new Date().toISOString(),
+              created_at: DEMO_WEEK_START,
               current_count: 5,
               completed: true,
               claimed: false,
@@ -1123,8 +1126,8 @@ export default function ShowcasePage() {
             {
               id: "demo-ch-2",
               week_number: 37,
-              week_start_date: new Date().toISOString(),
-              week_end_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+              week_start_date: DEMO_WEEK_START,
+              week_end_date: DEMO_WEEK_END,
               title: "Scholastic Ascent",
               description: "Complete 4 Mind quests to expand intellectual territory.",
               requirement_type: "category_count",
@@ -1132,7 +1135,7 @@ export default function ShowcasePage() {
               target_count: 4,
               reward_rare_currency: 12,
               is_active: true,
-              created_at: new Date().toISOString(),
+              created_at: DEMO_WEEK_START,
               current_count: 2,
               completed: false,
               claimed: false,
@@ -1141,8 +1144,8 @@ export default function ShowcasePage() {
             {
               id: "demo-ch-3",
               week_number: 37,
-              week_start_date: new Date().toISOString(),
-              week_end_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+              week_start_date: DEMO_WEEK_START,
+              week_end_date: DEMO_WEEK_END,
               title: "Astral Expedition",
               description: "Complete 7 total quests across any discipline quadrant.",
               requirement_type: "total_count",
@@ -1150,7 +1153,7 @@ export default function ShowcasePage() {
               target_count: 7,
               reward_rare_currency: 20,
               is_active: true,
-              created_at: new Date().toISOString(),
+              created_at: DEMO_WEEK_START,
               current_count: 7,
               completed: true,
               claimed: true,

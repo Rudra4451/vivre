@@ -40,11 +40,13 @@ export async function getAuthoritativeWeeklyChallenges(
   const { weekNumber, startDate, endDate } = getCurrentWeekBounds();
 
   // 1. Fetch active weekly challenges
-  let { data: challenges, error } = await supabase
+  const { data: fetchedChallenges, error } = await supabase
     .from("weekly_challenges")
     .select("*")
     .eq("is_active", true)
     .order("target_count", { ascending: true });
+
+  let challenges = fetchedChallenges;
 
   if (error || !challenges || challenges.length === 0) {
     // If table is unpopulated, create default weekly challenges

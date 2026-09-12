@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import type { ShopItem, InventoryItemWithDetails, CosmeticCategory } from "@/types";
+import type { ShopItem, InventoryItemWithDetails } from "@/types";
 import { purchaseCosmeticItemAction, equipCosmeticItemAction } from "@/lib/game/actions";
 import { AtlasAudio } from "@/lib/game/audio";
 import { AtlasAnnounce } from "@/lib/game/announcements";

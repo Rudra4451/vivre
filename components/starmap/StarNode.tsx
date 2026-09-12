@@ -18,7 +18,6 @@ export function StarNode({
   isIgnited,
   isMajor,
   colorHex,
-  name,
   isSelected = false,
   onClick,
 }: StarNodeProps) {

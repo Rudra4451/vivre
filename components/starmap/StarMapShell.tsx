@@ -30,9 +30,6 @@ const LazyStarMapCanvas = dynamic(
 export function StarMapShell({
   attributes: rawAttributes,
   level = 1,
-  currentXp,
-  xpToNext,
-  username,
   className = "",
   onSelectConstellation,
 }: StarMapProps) {

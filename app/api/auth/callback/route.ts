@@ -1,12 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { sanitizeRedirectUrl } from "@/lib/auth/redirect";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") ?? "/app";
+  const rawNext = requestUrl.searchParams.get("next");
+  const next = sanitizeRedirectUrl(rawNext, "/app");
   const type = requestUrl.searchParams.get("type");
 
   if (code) {
@@ -20,7 +22,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(new URL("/update-password", requestUrl.origin));
       }
 
-      // Default: email verification or sign-in
+      // Default: email verification or sign-in (safely sanitized relative path)
       return NextResponse.redirect(new URL(next, requestUrl.origin));
     }
   }

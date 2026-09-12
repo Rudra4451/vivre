@@ -16,6 +16,7 @@ import { ComebackEmail } from "@/components/emails/ComebackEmail";
 import { WeeklyRecapEmail } from "@/components/emails/WeeklyRecapEmail";
 import { render } from "@react-email/components";
 import React from "react";
+import { NextRequest } from "next/server";
 
 describe("Email Notifications System", () => {
   const originalEnv = process.env;
@@ -61,7 +62,7 @@ describe("Email Notifications System", () => {
 
     it("rejects tampered tokens", () => {
       const validToken = createUnsubscribeToken(testUserId, "comeback");
-      const [payload, signature] = validToken.split(".");
+      const [, signature] = validToken.split(".");
 
       // Tamper with payload
       const tamperedPayload = Buffer.from(
@@ -334,11 +335,11 @@ describe("Email Notifications System", () => {
   describe("Vercel Cron Route Handler Authorization", () => {
     it("returns 401 Unauthorized when Authorization header is missing", async () => {
       const { GET } = await import("@/app/api/cron/notifications/route");
-      const req = new Request("https://vivre.test/api/cron/notifications", {
+      const req = new NextRequest("https://vivre.test/api/cron/notifications", {
         method: "GET",
       });
 
-      const res = await GET(req as any);
+      const res = await GET(req);
       expect(res.status).toBe(401);
       const json = await res.json();
       expect(json.error).toMatch(/Unauthorized/i);
@@ -348,14 +349,14 @@ describe("Email Notifications System", () => {
 
     it("returns 401 Unauthorized when Bearer token is invalid", async () => {
       const { GET } = await import("@/app/api/cron/notifications/route");
-      const req = new Request("https://vivre.test/api/cron/notifications", {
+      const req = new NextRequest("https://vivre.test/api/cron/notifications", {
         method: "GET",
         headers: {
           authorization: "Bearer wrong-secret-token",
         },
       });
 
-      const res = await GET(req as any);
+      const res = await GET(req);
       expect(res.status).toBe(401);
       const json = await res.json();
       expect(json.error).toMatch(/Unauthorized/i);
@@ -369,12 +370,12 @@ describe("Email Notifications System", () => {
   describe("Unsubscribe Route Handler", () => {
     it("returns 400 when token is missing", async () => {
       const { GET } = await import("@/app/api/notifications/unsubscribe/route");
-      const req = new Request("https://vivre.test/api/notifications/unsubscribe", {
+      const req = new NextRequest("https://vivre.test/api/notifications/unsubscribe", {
         method: "GET",
         headers: { accept: "application/json" },
       });
 
-      const res = await GET(req as any);
+      const res = await GET(req);
       expect(res.status).toBe(400);
       const json = await res.json();
       expect(json.error).toMatch(/Missing token/i);
@@ -382,7 +383,7 @@ describe("Email Notifications System", () => {
 
     it("returns 400 when token is invalid or forged", async () => {
       const { GET } = await import("@/app/api/notifications/unsubscribe/route");
-      const req = new Request(
+      const req = new NextRequest(
         "https://vivre.test/api/notifications/unsubscribe?token=tampered.token.here",
         {
           method: "GET",
@@ -390,7 +391,7 @@ describe("Email Notifications System", () => {
         }
       );
 
-      const res = await GET(req as any);
+      const res = await GET(req);
       expect(res.status).toBe(400);
       const json = await res.json();
       expect(json.error).toMatch(/signature|invalid/i);

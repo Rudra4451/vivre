@@ -3,6 +3,7 @@ import {
   processComebackNotifications,
   processWeeklyRecapNotifications,
 } from "@/lib/notifications/service";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { error: "Unauthorized: Missing or invalid authorization token" },
       { status: 401 }
+    );
+  }
+
+  // Enforce sliding-window rate limiting on cron execution (10 requests/min)
+  const rateLimit = await checkRateLimit("global_cron_notifications", "cron");
+  if (!rateLimit.success) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Cron may only execute within configured intervals." },
+      { status: 429 }
     );
   }
 

@@ -19,6 +19,8 @@ const CATEGORIES: QuestCategory[] = [
   "Body",       // Vertex 4: Upper Left (198°)
 ];
 
+const GRID_LEVELS = [0.2, 0.4, 0.6, 0.8, 1.0];
+
 export function AttributeRadarChart({
   attributes: rawAttributes,
   targetMax = 50,
@@ -74,9 +76,8 @@ export function AttributeRadarChart({
   }, [center, maxRadius]);
 
   // Concentric pentagonal grid guide rings (20%, 40%, 60%, 80%, 100%)
-  const gridLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
   const gridPolygons = React.useMemo(() => {
-    return gridLevels.map((level) => {
+    return GRID_LEVELS.map((level) => {
       const r = maxRadius * level;
       const points = CATEGORIES.map((_, i) => {
         const angle = (i * 72 - 90) * (Math.PI / 180);
@@ -84,7 +85,7 @@ export function AttributeRadarChart({
       }).join(" ");
       return { level, points };
     });
-  }, [center, maxRadius, gridLevels]);
+  }, [center, maxRadius]);
 
   // User's attribute polygon points
   const userPolygonPoints = React.useMemo(() => {
