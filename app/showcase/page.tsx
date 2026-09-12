@@ -25,6 +25,9 @@ import { AtlasAudio } from "@/lib/game/audio";
 import { AtlasAnnounce, useAnnouncementStore } from "@/lib/game/announcements";
 import { useMotionPreferences } from "@/lib/game/motion-config";
 import { StarMapShell } from "@/components/starmap/StarMapShell";
+import { AttributeRadarChart } from "@/components/attributes";
+import { WeeklyChallengesCard } from "@/components/challenges";
+import { CosmeticShop } from "@/components/shop";
 
 export default function ShowcasePage() {
   const { theme, resolvedTheme } = useTheme();
@@ -1010,6 +1013,235 @@ export default function ShowcasePage() {
             </div>
           </Card>
         </div>
+      </section>
+
+      {/* ------------------------------------------------------------------------ */}
+      {/* 7. ATTRIBUTES: RESPONSIVE SVG RADAR PENTAGON CHART                       */}
+      {/* ------------------------------------------------------------------------ */}
+      <section className="space-y-6">
+        <div className="border-b border-[var(--atlas-line)] pb-4">
+          <Badge variant="reward" size="sm" className="mb-2 font-mono">
+            SECTION 07 · SYNERGY VISUALIZATION
+          </Badge>
+          <h2 className="font-display text-2xl font-bold text-[var(--atlas-ink)]">
+            Five-Aspect Attribute Radar
+          </h2>
+          <p className="mt-1 text-xs text-[var(--atlas-muted)] max-w-2xl">
+            Lightweight, zero-library responsive SVG pentagon chart. Renders Body, Mind, Discipline, Craft, and Spirit symmetry with interactive vertex inspection and screen-reader accessibility.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <Card className="p-5 flex flex-col items-center justify-center min-h-[380px]">
+            <AttributeRadarChart
+              attributes={[
+                { name: "Discipline", value: 45 },
+                { name: "Mind", value: 38 },
+                { name: "Craft", value: 24 },
+                { name: "Spirit", value: 35 },
+                { name: "Body", value: 30 },
+              ]}
+              targetMax={50}
+            />
+          </Card>
+
+          <Card className="p-5 space-y-4">
+            <div>
+              <h3 className="font-display text-base font-bold text-[var(--atlas-ink)]">
+                Five-Fold Discipline Architecture
+              </h3>
+              <p className="text-xs text-[var(--atlas-muted)] mt-1 leading-relaxed">
+                Vivre avoids flat linear XP meters. Quest completions are partitioned into 5 resonant human faculties to promote holistic lifestyle equilibrium.
+              </p>
+            </div>
+
+            <div className="space-y-2 text-xs font-mono">
+              <div className="flex justify-between p-2 rounded border border-[var(--atlas-line)] bg-[var(--atlas-surface-elevated)]">
+                <span className="text-violet-400 font-bold">◈ Discipline (Top)</span>
+                <span>Consistency, Habits, Routines</span>
+              </div>
+              <div className="flex justify-between p-2 rounded border border-[var(--atlas-line)] bg-[var(--atlas-surface-elevated)]">
+                <span className="text-sky-400 font-bold">✦ Mind (Right)</span>
+                <span>Intellect, Reading, Studies</span>
+              </div>
+              <div className="flex justify-between p-2 rounded border border-[var(--atlas-line)] bg-[var(--atlas-surface-elevated)]">
+                <span className="text-amber-400 font-bold">⚒ Craft (Lower Right)</span>
+                <span>Creation, Code, Engineering</span>
+              </div>
+              <div className="flex justify-between p-2 rounded border border-[var(--atlas-line)] bg-[var(--atlas-surface-elevated)]">
+                <span className="text-rose-400 font-bold">✧ Spirit (Lower Left)</span>
+                <span>Presence, Breathing, Altruism</span>
+              </div>
+              <div className="flex justify-between p-2 rounded border border-[var(--atlas-line)] bg-[var(--atlas-surface-elevated)]">
+                <span className="text-emerald-400 font-bold">⚡ Body (Upper Left)</span>
+                <span>Physical Vitality, Rest, Nutrition</span>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------------------------ */}
+      {/* 8. WEEKLY CHALLENGES: AUTHORITATIVE COMPLETION TRACKING                  */}
+      {/* ------------------------------------------------------------------------ */}
+      <section className="space-y-6">
+        <div className="border-b border-[var(--atlas-line)] pb-4">
+          <Badge variant="reward" size="sm" className="mb-2 font-mono">
+            SECTION 08 · EXPEDITION DIRECTIVES
+          </Badge>
+          <h2 className="font-display text-2xl font-bold text-[var(--atlas-ink)]">
+            Weekly Celestial Directives
+          </h2>
+          <p className="mt-1 text-xs text-[var(--atlas-muted)] max-w-2xl">
+            Server-generated weekly challenges evaluated against authoritative completion history. Rewards Starlight Embers (rare currency) strictly.
+          </p>
+        </div>
+
+        <WeeklyChallengesCard
+          initialChallenges={[
+            {
+              id: "demo-ch-1",
+              week_number: 37,
+              week_start_date: new Date().toISOString(),
+              week_end_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+              title: "Way of Discipline",
+              description: "Complete 5 Discipline quests to reinforce habits.",
+              requirement_type: "category_count",
+              target_category: "Discipline",
+              target_count: 5,
+              reward_rare_currency: 15,
+              is_active: true,
+              created_at: new Date().toISOString(),
+              current_count: 5,
+              completed: true,
+              claimed: false,
+              percent: 100,
+            },
+            {
+              id: "demo-ch-2",
+              week_number: 37,
+              week_start_date: new Date().toISOString(),
+              week_end_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+              title: "Scholastic Ascent",
+              description: "Complete 4 Mind quests to expand intellectual territory.",
+              requirement_type: "category_count",
+              target_category: "Mind",
+              target_count: 4,
+              reward_rare_currency: 12,
+              is_active: true,
+              created_at: new Date().toISOString(),
+              current_count: 2,
+              completed: false,
+              claimed: false,
+              percent: 50,
+            },
+            {
+              id: "demo-ch-3",
+              week_number: 37,
+              week_start_date: new Date().toISOString(),
+              week_end_date: new Date(Date.now() + 7 * 86400000).toISOString(),
+              title: "Astral Expedition",
+              description: "Complete 7 total quests across any discipline quadrant.",
+              requirement_type: "total_count",
+              target_category: null,
+              target_count: 7,
+              reward_rare_currency: 20,
+              is_active: true,
+              created_at: new Date().toISOString(),
+              current_count: 7,
+              completed: true,
+              claimed: true,
+              percent: 100,
+            },
+          ]}
+        />
+      </section>
+
+      {/* ------------------------------------------------------------------------ */}
+      {/* 9. COSMETIC SHOP & INVENTORY ECONOMY                                    */}
+      {/* ------------------------------------------------------------------------ */}
+      <section className="space-y-6">
+        <div className="border-b border-[var(--atlas-line)] pb-4">
+          <Badge variant="reward" size="sm" className="mb-2 font-mono">
+            SECTION 09 · COSMETIC ECONOMY
+          </Badge>
+          <h2 className="font-display text-2xl font-bold text-[var(--atlas-ink)]">
+            Cosmetic Wardrobe & Atomic Shop
+          </h2>
+          <p className="mt-1 text-xs text-[var(--atlas-muted)] max-w-2xl">
+            Cosmetics only (sky overlays, star colors, avatar frames, constellation styles). Atomic RPC <code className="text-sky-400 font-mono">purchase_item_v1</code> never trusts client prices, validates non-negative balances, prevents duplicate ownership, and enforces single-item equip slots.
+          </p>
+        </div>
+
+        <CosmeticShop
+          initialSoftCurrency={480}
+          initialRareCurrency={35}
+          initialItems={[
+            {
+              id: "item-1",
+              name: "Aurora Borealis Overlay",
+              description: "Atmospheric green and violet curtains illuminating your star map",
+              cost: 120,
+              currency_type: "soft",
+              category: "sky_overlay",
+              active: true,
+            },
+            {
+              id: "item-2",
+              name: "Nebular Void Overlay",
+              description: "Deep cosmic dust cloud with resonant ultraviolet starlight",
+              cost: 25,
+              currency_type: "rare",
+              category: "sky_overlay",
+              active: true,
+            },
+            {
+              id: "item-3",
+              name: "Supernova Gold Luminary",
+              description: "Pure solar gold emission for completed star nodes",
+              cost: 80,
+              currency_type: "soft",
+              category: "star_color",
+              active: true,
+            },
+            {
+              id: "item-4",
+              name: "Astrolabe Brass Frame",
+              description: "Engraved brass navigational dial with quadrant markers",
+              cost: 150,
+              currency_type: "soft",
+              category: "avatar_frame",
+              active: true,
+            },
+            {
+              id: "item-5",
+              name: "Geometric Vector Style",
+              description: "Crisp technical drafting lines between charted celestial nodes",
+              cost: 100,
+              currency_type: "soft",
+              category: "constellation_style",
+              active: true,
+            },
+          ]}
+          initialInventory={[
+            {
+              id: "inv-1",
+              user_id: "demo-user",
+              item_id: "item-3",
+              equipped: true,
+              acquired_at: new Date().toISOString(),
+              item: {
+                id: "item-3",
+                name: "Supernova Gold Luminary",
+                description: "Pure solar gold emission for completed star nodes",
+                cost: 80,
+                currency_type: "soft",
+                category: "star_color",
+                active: true,
+              },
+            },
+          ]}
+        />
       </section>
     </div>
   );

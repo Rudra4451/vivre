@@ -101,3 +101,95 @@ export interface CreateTaskResult {
   task?: Task;
   error?: string;
 }
+
+// --- Weekly Challenges ---
+export interface WeeklyChallenge {
+  id: string;
+  week_number: number;
+  week_start_date: string;
+  week_end_date: string;
+  title: string;
+  description: string;
+  requirement_type: "category_count" | "total_count";
+  target_category: string | null;
+  target_count: number;
+  reward_rare_currency: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface WeeklyChallengeProgress {
+  id: string;
+  user_id: string;
+  challenge_id: string;
+  current_count: number;
+  completed: boolean;
+  completed_at: string | null;
+  claimed: boolean;
+  claimed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WeeklyChallengeWithProgress extends WeeklyChallenge {
+  current_count: number;
+  completed: boolean;
+  claimed: boolean;
+  percent: number;
+}
+
+export interface ClaimWeeklyChallengeResult {
+  success: boolean;
+  data?: {
+    challenge_id: string;
+    rare_currency_awarded: number;
+    rare_currency: number;
+    claimed_at: string;
+  };
+  error?: string;
+}
+
+// --- Cosmetic Shop & Purchases ---
+export type CosmeticCategory =
+  | "sky_overlay"
+  | "star_color"
+  | "avatar_frame"
+  | "constellation_style";
+
+export interface AuthoritativePurchaseState {
+  success: boolean;
+  is_duplicate: boolean;
+  inventory_id: string;
+  item_id: string;
+  item_name: string;
+  cost: number;
+  currency_type: string;
+  soft_currency: number;
+  rare_currency: number;
+  purchased_at: string;
+}
+
+export interface PurchaseItemResult {
+  success: boolean;
+  data?: AuthoritativePurchaseState;
+  error?: string;
+}
+
+export interface AuthoritativeEquipState {
+  success: boolean;
+  inventory_id: string;
+  item_id: string;
+  category: string;
+  equipped: boolean;
+}
+
+export interface EquipCosmeticResult {
+  success: boolean;
+  data?: AuthoritativeEquipState;
+  error?: string;
+}
+
+export interface InventoryItemWithDetails extends InventoryItem {
+  item: ShopItem;
+}
+

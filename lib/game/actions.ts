@@ -10,7 +10,14 @@ import type {
   AuthoritativeReversalState,
   CreateTaskResult,
   Task,
+  PurchaseItemResult,
+  AuthoritativePurchaseState,
+  EquipCosmeticResult,
+  AuthoritativeEquipState,
+  ClaimWeeklyChallengeResult,
+  WeeklyChallengeWithProgress,
 } from "@/types";
+import { getAuthoritativeWeeklyChallenges } from "./weekly-challenges";
 
 export const completeTaskInputSchema = z.object({
   taskId: z.string().uuid({ message: "Invalid task ID format" }),
@@ -309,4 +316,205 @@ export async function updateSoundSettingsAction(
 
   return { success: true };
 }
+
+// -----------------------------------------------------------------------------
+// Server Action: purchaseCosmeticItemAction
+// -----------------------------------------------------------------------------
+export const purchaseItemInputSchema = z.object({
+  itemId: z.string().uuid({ message: "Invalid item ID format" }),
+  idempotencyKey: z
+    .string()
+    .uuid({ message: "Invalid idempotency key format" })
+    .default(() => crypto.randomUUID()),
+});
+
+export type PurchaseItemInput = z.input<typeof purchaseItemInputSchema>;
+
+export async function purchaseCosmeticItemAction(
+  input: PurchaseItemInput
+): Promise<PurchaseItemResult> {
+  const validation = purchaseItemInputSchema.safeParse(input);
+  if (!validation.success) {
+    return {
+      success: false,
+      error: validation.error.issues[0]?.message ?? "Invalid purchase input",
+    };
+  }
+
+  const { itemId, idempotencyKey } = validation.data;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Authentication required to purchase cosmetics" };
+  }
+
+  // Rate limit: 10 shop transactions / minute
+  const rateResult = await checkRateLimit(user.id, "purchase");
+  if (!rateResult.success) {
+    return {
+      success: false,
+      error: "Rate limit exceeded. Please wait a moment before purchasing again.",
+    };
+  }
+
+  const { data, error } = await supabase.rpc("purchase_item_v1", {
+    p_item_id: itemId,
+    p_idempotency_key: idempotencyKey,
+  });
+
+  if (error) {
+    const msg = error.message || "";
+    if (msg.includes("INSUFFICIENT_FUNDS")) {
+      return { success: false, error: "Insufficient currency balance for this cosmetic." };
+    }
+    if (msg.includes("already own")) {
+      return { success: false, error: "You already own this cosmetic item." };
+    }
+    if (msg.includes("Item not found")) {
+      return { success: false, error: "Cosmetic item not found." };
+    }
+    console.error("[Shop] Purchase RPC error:", error);
+    return { success: false, error: "Unable to complete purchase at this time." };
+  }
+
+  return {
+    success: true,
+    data: data as unknown as AuthoritativePurchaseState,
+  };
+}
+
+// -----------------------------------------------------------------------------
+// Server Action: equipCosmeticItemAction
+// -----------------------------------------------------------------------------
+export const equipItemInputSchema = z.object({
+  inventoryId: z.string().uuid({ message: "Invalid inventory ID format" }),
+});
+
+export type EquipItemInput = z.input<typeof equipItemInputSchema>;
+
+export async function equipCosmeticItemAction(
+  input: EquipItemInput
+): Promise<EquipCosmeticResult> {
+  const validation = equipItemInputSchema.safeParse(input);
+  if (!validation.success) {
+    return {
+      success: false,
+      error: validation.error.issues[0]?.message ?? "Invalid inventory ID",
+    };
+  }
+
+  const { inventoryId } = validation.data;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Authentication required to equip cosmetics" };
+  }
+
+  const { data, error } = await supabase.rpc("equip_cosmetic_v1", {
+    p_inventory_id: inventoryId,
+  });
+
+  if (error) {
+    console.error("[Shop] Equip RPC error:", error);
+    return { success: false, error: "Failed to update equipped cosmetic." };
+  }
+
+  return {
+    success: true,
+    data: data as unknown as AuthoritativeEquipState,
+  };
+}
+
+// -----------------------------------------------------------------------------
+// Server Action: claimWeeklyChallengeAction
+// -----------------------------------------------------------------------------
+export const claimChallengeInputSchema = z.object({
+  challengeId: z.string().uuid({ message: "Invalid challenge ID format" }),
+});
+
+export type ClaimChallengeInput = z.input<typeof claimChallengeInputSchema>;
+
+export async function claimWeeklyChallengeAction(
+  input: ClaimChallengeInput
+): Promise<ClaimWeeklyChallengeResult> {
+  const validation = claimChallengeInputSchema.safeParse(input);
+  if (!validation.success) {
+    return {
+      success: false,
+      error: validation.error.issues[0]?.message ?? "Invalid challenge ID",
+    };
+  }
+
+  const { challengeId } = validation.data;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Authentication required to claim challenge" };
+  }
+
+  const { data, error } = await supabase.rpc("claim_weekly_challenge_v1", {
+    p_challenge_id: challengeId,
+  });
+
+  if (error) {
+    const msg = error.message || "";
+    if (msg.includes("already claimed")) {
+      return { success: false, error: "Weekly challenge reward has already been claimed." };
+    }
+    if (msg.includes("not met")) {
+      return { success: false, error: "Challenge requirements have not been completed yet." };
+    }
+    console.error("[Challenges] Claim RPC error:", error);
+    return { success: false, error: "Failed to claim weekly challenge reward." };
+  }
+
+  return {
+    success: true,
+    data: data as ClaimWeeklyChallengeResult["data"],
+  };
+}
+
+// -----------------------------------------------------------------------------
+// Server Action: getWeeklyChallengesAction
+// -----------------------------------------------------------------------------
+export async function getWeeklyChallengesAction(): Promise<{
+  success: boolean;
+  data?: WeeklyChallengeWithProgress[];
+  error?: string;
+}> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Authentication required" };
+  }
+
+  try {
+    const challenges = await getAuthoritativeWeeklyChallenges(supabase, user.id);
+    return { success: true, data: challenges };
+  } catch (err) {
+    console.error("[Challenges] Fetch error:", err);
+    return { success: false, error: "Failed to load weekly challenges." };
+  }
+}
+
 

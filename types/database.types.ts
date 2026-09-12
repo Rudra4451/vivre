@@ -292,6 +292,120 @@ export interface Database {
           },
         ];
       };
+      shop_purchases: {
+        Row: {
+          id: string;
+          user_id: string;
+          item_id: string;
+          cost: number;
+          currency_type: string;
+          idempotency_key: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          item_id: string;
+          cost: number;
+          currency_type: string;
+          idempotency_key: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          item_id?: string;
+          cost?: number;
+          currency_type?: string;
+          idempotency_key?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      weekly_challenges: {
+        Row: {
+          id: string;
+          week_number: number;
+          week_start_date: string;
+          week_end_date: string;
+          title: string;
+          description: string;
+          requirement_type: string;
+          target_category: string | null;
+          target_count: number;
+          reward_rare_currency: number;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          week_number: number;
+          week_start_date: string;
+          week_end_date: string;
+          title: string;
+          description: string;
+          requirement_type: string;
+          target_category?: string | null;
+          target_count: number;
+          reward_rare_currency: number;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          week_number?: number;
+          week_start_date?: string;
+          week_end_date?: string;
+          title?: string;
+          description?: string;
+          requirement_type?: string;
+          target_category?: string | null;
+          target_count?: number;
+          reward_rare_currency?: number;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      weekly_challenge_progress: {
+        Row: {
+          id: string;
+          user_id: string;
+          challenge_id: string;
+          current_count: number;
+          completed: boolean;
+          completed_at: string | null;
+          claimed: boolean;
+          claimed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          challenge_id: string;
+          current_count?: number;
+          completed?: boolean;
+          completed_at?: string | null;
+          claimed?: boolean;
+          claimed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          challenge_id?: string;
+          current_count?: number;
+          completed?: boolean;
+          completed_at?: string | null;
+          claimed?: boolean;
+          claimed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -326,6 +440,25 @@ export interface Database {
           p_user_id: string;
         };
         Returns: string | null;
+      };
+      purchase_item_v1: {
+        Args: {
+          p_item_id: string;
+          p_idempotency_key: string;
+        };
+        Returns: Json;
+      };
+      equip_cosmetic_v1: {
+        Args: {
+          p_inventory_id: string;
+        };
+        Returns: Json;
+      };
+      claim_weekly_challenge_v1: {
+        Args: {
+          p_challenge_id: string;
+        };
+        Returns: Json;
       };
     };
     Enums: {

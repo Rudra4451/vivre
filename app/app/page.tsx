@@ -1,11 +1,16 @@
 import { requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { StarMapShell } from "@/components/starmap/StarMapShell";
+import { AttributeRadarChart } from "@/components/attributes";
+import { WeeklyChallengesCard } from "@/components/challenges";
+import { CosmeticShop } from "@/components/shop";
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
 import { QuestBoardHeader } from "@/components/quest/QuestBoardHeader";
 import { QuestBoard } from "@/components/quest/QuestBoard";
 import { Badge } from "@/components/ui/Badge";
 import { getLocalDateString } from "@/lib/game/progression";
+import { getAuthoritativeWeeklyChallenges } from "@/lib/game/weekly-challenges";
+import type { InventoryItemWithDetails, ShopItem } from "@/types";
 
 export default async function CommandDeckPage() {
   const user = await requireUser();
@@ -49,6 +54,24 @@ export default async function CommandDeckPage() {
       return completionDay === todayStr;
     })
     .map((c) => c.task_id);
+
+  // 5. Fetch weekly challenges
+  const weeklyChallenges = await getAuthoritativeWeeklyChallenges(supabase, user.id);
+
+  // 6. Fetch cosmetic shop items & player inventory
+  const { data: shopItemsData } = await supabase
+    .from("shop_items")
+    .select("*")
+    .eq("active", true)
+    .order("cost", { ascending: true });
+
+  const { data: rawInventory } = await supabase
+    .from("inventory")
+    .select("*, item:shop_items(*)")
+    .eq("user_id", user.id);
+
+  const inventoryItems = (rawInventory || []) as unknown as InventoryItemWithDetails[];
+  const shopItems = (shopItemsData || []) as ShopItem[];
 
   const defaultProfile = profile ?? {
     id: user.id,
@@ -102,10 +125,14 @@ export default async function CommandDeckPage() {
         todayCompletionsCount={completedTodayTaskIds.length}
       />
 
-      {/* Main Grid: Quest Board (Col 2) & Starmap / Pilot Metrics (Col 1) */}
+      {/* Main Grid: Quest Board & Weekly Challenges (Col 2) & Starmap / Pilot Metrics (Col 1) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        {/* Primary Quest Board Area (2 columns on large screens) */}
+        {/* Primary Quest & Directives Area (2 columns on large screens) */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Weekly Celestial Directives */}
+          <WeeklyChallengesCard initialChallenges={weeklyChallenges} />
+
+          {/* Daily Quests Board */}
           <QuestBoard
             userId={user.id}
             initialTasks={tasks ?? []}
@@ -113,7 +140,7 @@ export default async function CommandDeckPage() {
           />
         </div>
 
-        {/* Sidebar: Starmap & Pilot Status & Attributes */}
+        {/* Sidebar: Starmap & Attribute Radar */}
         <div className="space-y-6">
           {/* Starmap 3D Visualizer */}
           <Card className="overflow-hidden p-0">
@@ -136,37 +163,35 @@ export default async function CommandDeckPage() {
             </div>
           </Card>
 
-          {/* Pilot Attributes */}
-          <Card>
-            <CardTitle className="text-sm font-display tracking-wider flex items-center justify-between">
-              <span>Aspect Alignment</span>
-              <span className="text-[10px] font-mono text-[var(--atlas-muted)] uppercase">Attributes</span>
-            </CardTitle>
-            <CardDescription className="mt-1 text-xs">
-              Discipline markers forged through completed undertakings
-            </CardDescription>
-
-            <div className="mt-4 space-y-2.5 text-xs">
-              {attributes && attributes.length > 0 ? (
-                attributes.map((attr) => (
-                  <div
-                    key={attr.id}
-                    className="flex justify-between items-center border-b border-[var(--atlas-line)] pb-2 last:border-0"
-                  >
-                    <span className="text-[var(--atlas-ink)] font-medium">{attr.name}</span>
-                    <span className="font-mono font-semibold text-[var(--atlas-ink)] bg-[var(--atlas-bg)] border border-[var(--atlas-line)] px-2 py-0.5 rounded">
-                      {attr.value}
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <div className="text-[var(--atlas-muted)] text-center py-4 italic">
-                  Complete your first quest to unlock celestial alignment.
-                </div>
-              )}
+          {/* Five Attributes Pentagon / Radar Chart */}
+          <Card className="p-5">
+            <div className="flex items-center justify-between border-b border-[var(--atlas-line)] pb-3 mb-4">
+              <div>
+                <CardTitle className="text-sm font-display tracking-wider">
+                  Aspect Alignment
+                </CardTitle>
+                <CardDescription className="text-xs mt-0.5">
+                  Five-fold discipline symmetry & synergy
+                </CardDescription>
+              </div>
+              <span className="text-[10px] font-mono text-[var(--atlas-muted)] uppercase bg-[var(--atlas-bg)] px-2 py-0.5 rounded border border-[var(--atlas-line)]">
+                Radar
+              </span>
             </div>
+
+            <AttributeRadarChart attributes={attributes ?? []} targetMax={50} />
           </Card>
         </div>
+      </div>
+
+      {/* Cartographic Wardrobe & Cosmetic Shop (Cosmetics Only) */}
+      <div className="pt-6 border-t border-[var(--atlas-line)]">
+        <CosmeticShop
+          initialItems={shopItems}
+          initialInventory={inventoryItems}
+          initialSoftCurrency={defaultProfile.soft_currency}
+          initialRareCurrency={defaultProfile.rare_currency}
+        />
       </div>
     </div>
   );
