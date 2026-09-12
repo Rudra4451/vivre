@@ -250,3 +250,63 @@ export async function createTaskAction(
     task: data as Task,
   };
 }
+
+export const updateSoundSettingsInputSchema = z.object({
+  soundEnabled: z.boolean().optional(),
+  calmMode: z.boolean().optional(),
+});
+
+export type UpdateSoundSettingsInput = z.input<typeof updateSoundSettingsInputSchema>;
+
+/**
+ * Server Action: updateSoundSettingsAction
+ *
+ * Persists sound_enabled and calm_mode preferences directly to the user's profile in Supabase.
+ */
+export async function updateSoundSettingsAction(
+  input: UpdateSoundSettingsInput
+): Promise<{ success: boolean; error?: string }> {
+  const validation = updateSoundSettingsInputSchema.safeParse(input);
+  if (!validation.success) {
+    return { success: false, error: "Invalid sound settings" };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    // Unauthenticated caller (e.g. guest or showcase demonstration) — safe no-op
+    return { success: true };
+  }
+
+  const updates: {
+    sound_enabled?: boolean;
+    calm_mode?: boolean;
+    updated_at: string;
+  } = {
+    updated_at: new Date().toISOString(),
+  };
+
+  if (validation.data.soundEnabled !== undefined) {
+    updates.sound_enabled = validation.data.soundEnabled;
+  }
+  if (validation.data.calmMode !== undefined) {
+    updates.calm_mode = validation.data.calmMode;
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update(updates)
+    .eq("id", user.id);
+
+  if (error) {
+    console.error("[Settings] Sound settings update error:", error);
+    return { success: false, error: "Failed to persist sound settings" };
+  }
+
+  return { success: true };
+}
+

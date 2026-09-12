@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { updateSoundSettingsAction } from "./actions";
 
 const CALM_MODE_STORAGE_KEY = "vivre-calm-mode";
 const SOUND_STORAGE_KEY = "vivre-sound-enabled";
@@ -11,6 +12,7 @@ interface UIStoreState {
   setSoundEnabled: (enabled: boolean) => void;
   toggleCalmMode: () => void;
   setCalmMode: (enabled: boolean) => void;
+  hydrateFromProfile: (soundEnabled: boolean, calmMode: boolean) => void;
   setActiveModal: (modal: string | null) => void;
 }
 
@@ -37,6 +39,8 @@ export const useUIStore = create<UIStoreState>((set) => {
         try {
           localStorage.setItem(SOUND_STORAGE_KEY, String(next));
         } catch {}
+        // Persist to database server-side asynchronously
+        updateSoundSettingsAction({ soundEnabled: next }).catch(() => {});
         return { soundEnabled: next };
       }),
 
@@ -44,6 +48,7 @@ export const useUIStore = create<UIStoreState>((set) => {
       try {
         localStorage.setItem(SOUND_STORAGE_KEY, String(enabled));
       } catch {}
+      updateSoundSettingsAction({ soundEnabled: enabled }).catch(() => {});
       set({ soundEnabled: enabled });
     },
 
@@ -53,6 +58,8 @@ export const useUIStore = create<UIStoreState>((set) => {
         try {
           localStorage.setItem(CALM_MODE_STORAGE_KEY, String(next));
         } catch {}
+        // Persist to database server-side asynchronously
+        updateSoundSettingsAction({ calmMode: next }).catch(() => {});
         return { calmMode: next };
       }),
 
@@ -60,7 +67,16 @@ export const useUIStore = create<UIStoreState>((set) => {
       try {
         localStorage.setItem(CALM_MODE_STORAGE_KEY, String(enabled));
       } catch {}
+      updateSoundSettingsAction({ calmMode: enabled }).catch(() => {});
       set({ calmMode: enabled });
+    },
+
+    hydrateFromProfile: (soundEnabled: boolean, calmMode: boolean) => {
+      try {
+        localStorage.setItem(SOUND_STORAGE_KEY, String(soundEnabled));
+        localStorage.setItem(CALM_MODE_STORAGE_KEY, String(calmMode));
+      } catch {}
+      set({ soundEnabled, calmMode });
     },
 
     setActiveModal: (modal) => set({ activeModal: modal }),

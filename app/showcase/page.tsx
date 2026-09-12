@@ -788,6 +788,107 @@ export default function ShowcasePage() {
           </Card>
         </div>
 
+        {/* Centralized Celestial Sound System Audition Panel */}
+        <Card className="p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[var(--atlas-line)] pb-3 gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <Badge variant="reward" size="sm" className="font-mono">
+                  HOWLER.JS ENGINE
+                </Badge>
+                <h3 className="font-display text-sm font-semibold text-[var(--atlas-ink)]">
+                  Adaptive Celestial Sound Palette
+                </h3>
+              </div>
+              <p className="text-[11px] text-[var(--atlas-muted)] mt-1">
+                Airy, restrained harmonic audio. Preloads essential short sounds; lazy-loads extended assets. Never autoplays before user gesture. Suppressed in Calm Mode.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant={soundEnabled ? "reward" : "outline"} size="sm">
+                Sound: {soundEnabled ? "Active" : "Muted"}
+              </Badge>
+              <Badge variant={isCalmMode ? "warning" : "outline"} size="sm">
+                Calm: {isCalmMode ? "Filtering Active" : "Full"}
+              </Badge>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {/* 1. Completion */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex flex-col items-center justify-center p-3 h-auto gap-1 border-[var(--atlas-line)] hover:border-[var(--atlas-ink)]"
+              onClick={() => AtlasAudio.playCompletion(false)}
+            >
+              <span className="text-base">✦</span>
+              <span className="font-mono text-xs font-bold text-[var(--atlas-ink)]">Completion</span>
+              <span className="text-[9px] font-mono text-[var(--atlas-muted)]">Preloaded · Normal</span>
+            </Button>
+
+            {/* 2. Bonus */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex flex-col items-center justify-center p-3 h-auto gap-1 border-[var(--atlas-line)] hover:border-[var(--atlas-ink)]"
+              onClick={() => AtlasAudio.playBonus()}
+            >
+              <span className="text-base">✧</span>
+              <span className="font-mono text-xs font-bold text-[var(--atlas-ink)]">Bonus</span>
+              <span className="text-[9px] font-mono text-[var(--atlas-muted)]">Preloaded · Twinkle</span>
+            </Button>
+
+            {/* 3. Critical */}
+            <Button
+              variant="reward"
+              size="sm"
+              className="flex flex-col items-center justify-center p-3 h-auto gap-1"
+              onClick={() => AtlasAudio.playCritical()}
+            >
+              <span className="text-base">★</span>
+              <span className="font-mono text-xs font-bold">Critical</span>
+              <span className="text-[9px] font-mono opacity-80">Preloaded · Triad</span>
+            </Button>
+
+            {/* 4. Level-Up */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex flex-col items-center justify-center p-3 h-auto gap-1 border-[var(--atlas-line)] hover:border-[var(--atlas-ink)]"
+              onClick={() => AtlasAudio.playLevelUp()}
+            >
+              <span className="text-base">⚚</span>
+              <span className="font-mono text-xs font-bold text-[var(--atlas-ink)]">Level-Up</span>
+              <span className="text-[9px] font-mono text-[var(--atlas-muted)]">Lazy · Ascendant</span>
+            </Button>
+
+            {/* 5. Shield */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex flex-col items-center justify-center p-3 h-auto gap-1 border-[var(--atlas-line)] hover:border-[var(--atlas-ink)]"
+              onClick={() => AtlasAudio.playStreakShield()}
+            >
+              <span className="text-base">🛡️</span>
+              <span className="font-mono text-xs font-bold text-[var(--atlas-ink)]">Shield</span>
+              <span className="text-[9px] font-mono text-[var(--atlas-muted)]">Lazy · Protection</span>
+            </Button>
+
+            {/* 6. Purchase */}
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex flex-col items-center justify-center p-3 h-auto gap-1 border-[var(--atlas-line)] hover:border-[var(--atlas-ink)]"
+              onClick={() => AtlasAudio.playPurchase()}
+            >
+              <span className="text-base">🪙</span>
+              <span className="font-mono text-xs font-bold text-[var(--atlas-ink)]">Purchase</span>
+              <span className="text-[9px] font-mono text-[var(--atlas-muted)]">Lazy · Astral Coin</span>
+            </Button>
+          </div>
+        </Card>
+
         {/* Real-time Screen Reader Live Log */}
         <Card className="p-5">
           <div className="flex items-center justify-between border-b border-[var(--atlas-line)] pb-3">
