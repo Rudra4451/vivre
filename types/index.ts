@@ -193,3 +193,24 @@ export interface InventoryItemWithDetails extends InventoryItem {
   item: ShopItem;
 }
 
+// --- Notifications & Emails ---
+export type NotificationType = "comeback" | "weekly_recap";
+
+export type NotificationDelivery =
+  Database["public"]["Tables"]["notification_deliveries"]["Row"];
+
+export type NotificationDeliveryInsert =
+  Database["public"]["Tables"]["notification_deliveries"]["Insert"];
+
+export interface NotificationEligibilityResult {
+  eligible: boolean;
+  reason?: string;
+  user_id: string;
+  email?: string | null;
+  username?: string | null;
+  timezone: string;
+  local_date: string;
+  streak_at_risk?: boolean;
+  weekly_challenge_incomplete?: boolean;
+  incomplete_challenges_count?: number;
+}

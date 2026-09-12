@@ -26,6 +26,9 @@ export interface Database {
           theme_preference: string;
           sound_enabled: boolean;
           calm_mode: boolean;
+          email: string | null;
+          notification_email_comeback: boolean;
+          notification_email_weekly_recap: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -45,6 +48,9 @@ export interface Database {
           theme_preference?: string;
           sound_enabled?: boolean;
           calm_mode?: boolean;
+          email?: string | null;
+          notification_email_comeback?: boolean;
+          notification_email_weekly_recap?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -64,6 +70,9 @@ export interface Database {
           theme_preference?: string;
           sound_enabled?: boolean;
           calm_mode?: boolean;
+          email?: string | null;
+          notification_email_comeback?: boolean;
+          notification_email_weekly_recap?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -403,6 +412,33 @@ export interface Database {
           claimed_at?: string | null;
           created_at?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      notification_deliveries: {
+        Row: {
+          id: string;
+          user_id: string;
+          notification_type: string;
+          sent_at: string;
+          local_date: string;
+          metadata: Json | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          notification_type: string;
+          sent_at?: string;
+          local_date: string;
+          metadata?: Json | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          notification_type?: string;
+          sent_at?: string;
+          local_date?: string;
+          metadata?: Json | null;
         };
         Relationships: [];
       };

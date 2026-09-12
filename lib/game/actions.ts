@@ -517,4 +517,49 @@ export async function getWeeklyChallengesAction(): Promise<{
   }
 }
 
+// -----------------------------------------------------------------------------
+// Server Action: updateNotificationPreferencesAction
+// -----------------------------------------------------------------------------
+export const updateNotificationPreferencesSchema = z.object({
+  notification_email_comeback: z.boolean().optional(),
+  notification_email_weekly_recap: z.boolean().optional(),
+  email: z.string().email("Invalid email format").optional(),
+});
 
+export type UpdateNotificationPreferencesInput = z.infer<
+  typeof updateNotificationPreferencesSchema
+>;
+
+export async function updateNotificationPreferencesAction(
+  input: UpdateNotificationPreferencesInput
+): Promise<{ success: boolean; error?: string }> {
+  const validation = updateNotificationPreferencesSchema.safeParse(input);
+  if (!validation.success) {
+    return {
+      success: false,
+      error: validation.error.issues[0]?.message ?? "Invalid preference parameters",
+    };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: "Authentication required" };
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update(validation.data)
+    .eq("id", user.id);
+
+  if (error) {
+    console.error("[Notifications] Preference update error:", error);
+    return { success: false, error: "Failed to update notification preferences." };
+  }
+
+  return { success: true };
+}

@@ -93,6 +93,9 @@ export default function ShowcasePage() {
     theme_preference: "system" as const,
     sound_enabled: true,
     calm_mode: false,
+    email: "astraeus@vivre.app",
+    notification_email_comeback: true,
+    notification_email_weekly_recap: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };

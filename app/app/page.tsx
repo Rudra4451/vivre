@@ -89,6 +89,9 @@ export default async function CommandDeckPage() {
     theme_preference: "system",
     sound_enabled: true,
     calm_mode: false,
+    email: user.email ?? null,
+    notification_email_comeback: true,
+    notification_email_weekly_recap: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
