@@ -3,7 +3,14 @@
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { checkRateLimit } from "@/lib/rate-limit";
-import type { CompleteTaskResult, AuthoritativeProgressionState } from "@/types";
+import type {
+  CompleteTaskResult,
+  AuthoritativeProgressionState,
+  ReverseCompletionResult,
+  AuthoritativeReversalState,
+  CreateTaskResult,
+  Task,
+} from "@/types";
 
 export const completeTaskInputSchema = z.object({
   taskId: z.string().uuid({ message: "Invalid task ID format" }),
@@ -115,5 +122,131 @@ export async function completeTask(
   return {
     success: true,
     data: data as unknown as AuthoritativeProgressionState,
+  };
+}
+
+export const reverseCompletionInputSchema = z.object({
+  completionId: z.string().uuid({ message: "Invalid completion ID format" }),
+});
+
+export type ReverseCompletionInput = z.input<typeof reverseCompletionInputSchema>;
+
+/**
+ * Server Action: reverseCompletion
+ *
+ * Reverses a task completion within the 5-second UI window via a compensating
+ * database transaction (inserting into completion_reversals).
+ */
+export async function reverseCompletion(
+  input: ReverseCompletionInput
+): Promise<ReverseCompletionResult> {
+  const validation = reverseCompletionInputSchema.safeParse(input);
+  if (!validation.success) {
+    return {
+      success: false,
+      error: validation.error.issues[0]?.message ?? "Invalid reversal input",
+    };
+  }
+
+  const { completionId } = validation.data;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return {
+      success: false,
+      error: "Authentication required to reverse completions",
+    };
+  }
+
+  const { data, error } = await supabase.rpc("reverse_completion_v1", {
+    p_completion_id: completionId,
+  });
+
+  if (error) {
+    const lower = (error.message || "").toLowerCase();
+    if (lower.includes("already been reversed")) {
+      return { success: false, error: "This completion was already reversed." };
+    }
+    if (lower.includes("expired") || lower.includes("reversal window")) {
+      return { success: false, error: "The 5-second undo window for this quest has expired." };
+    }
+    if (lower.includes("unauthorized") || lower.includes("does not belong")) {
+      return { success: false, error: "You are not authorized to reverse this completion." };
+    }
+    if (lower.includes("not found")) {
+      return { success: false, error: "Completion record not found." };
+    }
+
+    console.error("[Progression Engine] Reversal error:", error);
+    return { success: false, error: "Unable to reverse completion at this time." };
+  }
+
+  return {
+    success: true,
+    data: data as unknown as AuthoritativeReversalState,
+  };
+}
+
+export const createTaskInputSchema = z.object({
+  title: z.string().min(1, "Title is required").max(100, "Title is too long"),
+  category: z.enum(["Body", "Mind", "Discipline", "Craft", "Spirit"]),
+  isRecurring: z.boolean().default(false),
+});
+
+export type CreateTaskInput = z.input<typeof createTaskInputSchema>;
+
+/**
+ * Server Action: createTaskAction
+ *
+ * Creates a new task for the authenticated pilot.
+ */
+export async function createTaskAction(
+  input: CreateTaskInput
+): Promise<CreateTaskResult> {
+  const validation = createTaskInputSchema.safeParse(input);
+  if (!validation.success) {
+    return {
+      success: false,
+      error: validation.error.issues[0]?.message ?? "Invalid task data",
+    };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return {
+      success: false,
+      error: "Authentication required to create tasks",
+    };
+  }
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .insert({
+      user_id: user.id,
+      title: validation.data.title,
+      category: validation.data.category,
+      is_recurring: validation.data.isRecurring,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[Tasks] Creation error:", error);
+    return { success: false, error: "Failed to create task" };
+  }
+
+  return {
+    success: true,
+    task: data as Task,
   };
 }

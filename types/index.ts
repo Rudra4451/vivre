@@ -7,6 +7,7 @@ export type Task = Database["public"]["Tables"]["tasks"]["Row"];
 export type TaskCompletion = Database["public"]["Tables"]["task_completions"]["Row"];
 export type ShopItem = Database["public"]["Tables"]["shop_items"]["Row"];
 export type InventoryItem = Database["public"]["Tables"]["inventory"]["Row"];
+export type CompletionReversal = Database["public"]["Tables"]["completion_reversals"]["Row"];
 
 // --- Insert Types ---
 export type TaskInsert = Database["public"]["Tables"]["tasks"]["Insert"];
@@ -66,5 +67,37 @@ export interface AuthoritativeProgressionState {
 export interface CompleteTaskResult {
   success: boolean;
   data?: AuthoritativeProgressionState;
+  error?: string;
+}
+
+export interface AuthoritativeReversalState {
+  success: boolean;
+  reversal_id: string;
+  completion_id: string;
+  task_id: string;
+  category: string;
+  xp_reversed: number;
+  level: number;
+  current_xp: number;
+  xp_to_next: number;
+  current_streak: number;
+  longest_streak: number;
+  streak_shield_available: boolean;
+  attribute: {
+    name: string;
+    value: number;
+  };
+  reversed_at: string;
+}
+
+export interface ReverseCompletionResult {
+  success: boolean;
+  data?: AuthoritativeReversalState;
+  error?: string;
+}
+
+export interface CreateTaskResult {
+  success: boolean;
+  task?: Task;
   error?: string;
 }

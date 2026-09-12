@@ -253,6 +253,45 @@ export interface Database {
           },
         ];
       };
+      completion_reversals: {
+        Row: {
+          id: string;
+          completion_id: string;
+          user_id: string;
+          xp_reversed: number;
+          reversed_at: string;
+        };
+        Insert: {
+          id?: string;
+          completion_id: string;
+          user_id: string;
+          xp_reversed?: number;
+          reversed_at?: string;
+        };
+        Update: {
+          id?: string;
+          completion_id?: string;
+          user_id?: string;
+          xp_reversed?: number;
+          reversed_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "completion_reversals_completion_id_fkey";
+            columns: ["completion_id"];
+            isOneToOne: true;
+            referencedRelation: "task_completions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "completion_reversals_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -262,6 +301,12 @@ export interface Database {
         Args: {
           p_task_id: string;
           p_idempotency_key: string;
+        };
+        Returns: Json;
+      };
+      reverse_completion_v1: {
+        Args: {
+          p_completion_id: string;
         };
         Returns: Json;
       };
