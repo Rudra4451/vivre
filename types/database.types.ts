@@ -258,6 +258,13 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
+      complete_task_v1: {
+        Args: {
+          p_task_id: string;
+          p_idempotency_key: string;
+        };
+        Returns: Json;
+      };
       complete_task: {
         Args: {
           p_task_id: string;

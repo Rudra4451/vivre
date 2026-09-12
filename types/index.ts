@@ -32,3 +32,39 @@ export interface AuthActionResult {
   error?: string;
   redirectTo?: string;
 }
+
+// --- Progression Engine Authoritative State ---
+export interface AuthoritativeProgressionState {
+  success: boolean;
+  is_duplicate: boolean;
+  completion_id: string;
+  task_id: string;
+  category: string;
+  base_xp?: number;
+  multiplier?: number;
+  bonus_roll: string;
+  xp_awarded: number;
+  is_capped?: boolean;
+  daily_category_completions?: number;
+  level: number;
+  current_xp: number;
+  xp_to_next: number;
+  leveled_up: boolean;
+  levels_gained: number;
+  current_streak: number;
+  longest_streak: number;
+  streak_shield_available: boolean;
+  streak_shield_refill_at: string | null;
+  shield_consumed: boolean;
+  attribute: {
+    name: string;
+    value: number;
+  };
+  completed_at: string;
+}
+
+export interface CompleteTaskResult {
+  success: boolean;
+  data?: AuthoritativeProgressionState;
+  error?: string;
+}

@@ -12,6 +12,8 @@ export const serverEnvSchema = clientEnvSchema.extend({
   SUPABASE_SECRET_KEY: z.string().min(1, "SUPABASE_SECRET_KEY is required"),
   RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
   CRON_SECRET: z.string().min(1, "CRON_SECRET is required"),
+  UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
 });
 
 export type ClientEnv = z.infer<typeof clientEnvSchema>;
