@@ -253,24 +253,35 @@ npx supabase db reset
 
 ---
 
-## 🌐 Deployment
+## 🌐 Production Deployment & Demo Credentials
 
-Vivre is designed for **Vercel + Supabase** deployment:
+- **Live Production URL:** [https://vivre-five.vercel.app](https://vivre-five.vercel.app)
+- **Live Showcase & Design System:** [https://vivre-five.vercel.app/showcase](https://vivre-five.vercel.app/showcase)
+- **Health & Telemetry:** [https://vivre-five.vercel.app/api/health](https://vivre-five.vercel.app/api/health)
+- **Judge / Reviewer Demo Credentials:**
+  - **Email:** `orbit.test.vivre@gmail.com`
+  - **Password:** `OrbitDemo2026!`
+- **Demo Script & Video Guide:** See [`DEMO.md`](./DEMO.md) for a 2-minute walkthrough path.
 
-1. Push to GitHub → Import into [Vercel](https://vercel.com)
-2. Create a [Supabase](https://supabase.com) project
-3. Set environment variables in Vercel dashboard
-4. Push migrations: `npx supabase db push`
-5. Deploy 🚀
+---
+
+## ⚠️ Known Limitations & Edge Cases
+
+1. **Email Provider Free Tier Quota:** Supabase default email limits outbound confirmation emails to ~3/hr. We mitigated this by implementing server-side admin auto-confirmation on signup, eliminating email delivery delays.
+2. **WebGL Device Fallback:** While Three.js renders smoothly across desktop and modern mobile devices, legacy browsers without WebGL support display a 2D canvas fallback.
+3. **Cron Schedule in Hobby Tier:** Vercel Hobby plan limits automated cron jobs to once daily (`0 0 * * *`); weekly and comeback recaps run in daily batches accordingly.
 
 ---
 
 ## 👥 Team Orbit
 
-Built with ❤️ by **Team Orbit** for the hackathon.
+Built with passion and precision by **Team Orbit** for the 2026 Hackathon.
 
 ---
 
 ## 📄 License
+
+MIT License — free for educational and non-commercial development.
+
 
 MIT © 2026 Team Orbit
