@@ -18,16 +18,24 @@ import type {
   WeeklyChallengeWithProgress,
 } from "@/types";
 import { getAuthoritativeWeeklyChallenges } from "./weekly-challenges";
-
-export const completeTaskInputSchema = z.object({
-  taskId: z.string().uuid({ message: "Invalid task ID format" }),
-  idempotencyKey: z
-    .string()
-    .uuid({ message: "Invalid idempotency key format" })
-    .default(() => crypto.randomUUID()),
-});
-
-export type CompleteTaskInput = z.input<typeof completeTaskInputSchema>;
+import {
+  completeTaskInputSchema,
+  type CompleteTaskInput,
+  reverseCompletionInputSchema,
+  type ReverseCompletionInput,
+  createTaskInputSchema,
+  type CreateTaskInput,
+  updateSoundSettingsInputSchema,
+  type UpdateSoundSettingsInput,
+  purchaseItemInputSchema,
+  type PurchaseItemInput,
+  equipItemInputSchema,
+  type EquipItemInput,
+  claimChallengeInputSchema,
+  type ClaimChallengeInput,
+  updateNotificationPreferencesSchema,
+  type UpdateNotificationPreferencesInput,
+} from "./schemas";
 
 /**
  * Server Action: completeTask
@@ -132,11 +140,7 @@ export async function completeTask(
   };
 }
 
-export const reverseCompletionInputSchema = z.object({
-  completionId: z.string().uuid({ message: "Invalid completion ID format" }),
-});
 
-export type ReverseCompletionInput = z.input<typeof reverseCompletionInputSchema>;
 
 /**
  * Server Action: reverseCompletion
@@ -199,21 +203,7 @@ export async function reverseCompletion(
   };
 }
 
-export const createTaskInputSchema = z.object({
-  title: z
-    .string()
-    .trim()
-    .min(1, "Title is required")
-    .max(100, "Title cannot exceed 100 characters")
-    .refine(
-      (val) => !/[<>]/.test(val),
-      "Task title cannot contain HTML or script tags"
-    ),
-  category: z.enum(["Body", "Mind", "Discipline", "Craft", "Spirit"]),
-  isRecurring: z.boolean().default(false),
-});
 
-export type CreateTaskInput = z.input<typeof createTaskInputSchema>;
 
 /**
  * Server Action: createTaskAction
@@ -266,12 +256,7 @@ export async function createTaskAction(
   };
 }
 
-export const updateSoundSettingsInputSchema = z.object({
-  soundEnabled: z.boolean().optional(),
-  calmMode: z.boolean().optional(),
-});
 
-export type UpdateSoundSettingsInput = z.input<typeof updateSoundSettingsInputSchema>;
 
 /**
  * Server Action: updateSoundSettingsAction
@@ -328,15 +313,7 @@ export async function updateSoundSettingsAction(
 // -----------------------------------------------------------------------------
 // Server Action: purchaseCosmeticItemAction
 // -----------------------------------------------------------------------------
-export const purchaseItemInputSchema = z.object({
-  itemId: z.string().uuid({ message: "Invalid item ID format" }),
-  idempotencyKey: z
-    .string()
-    .uuid({ message: "Invalid idempotency key format" })
-    .default(() => crypto.randomUUID()),
-});
 
-export type PurchaseItemInput = z.input<typeof purchaseItemInputSchema>;
 
 export async function purchaseCosmeticItemAction(
   input: PurchaseItemInput
@@ -399,11 +376,7 @@ export async function purchaseCosmeticItemAction(
 // -----------------------------------------------------------------------------
 // Server Action: equipCosmeticItemAction
 // -----------------------------------------------------------------------------
-export const equipItemInputSchema = z.object({
-  inventoryId: z.string().uuid({ message: "Invalid inventory ID format" }),
-});
 
-export type EquipItemInput = z.input<typeof equipItemInputSchema>;
 
 export async function equipCosmeticItemAction(
   input: EquipItemInput
@@ -446,11 +419,7 @@ export async function equipCosmeticItemAction(
 // -----------------------------------------------------------------------------
 // Server Action: claimWeeklyChallengeAction
 // -----------------------------------------------------------------------------
-export const claimChallengeInputSchema = z.object({
-  challengeId: z.string().uuid({ message: "Invalid challenge ID format" }),
-});
 
-export type ClaimChallengeInput = z.input<typeof claimChallengeInputSchema>;
 
 export async function claimWeeklyChallengeAction(
   input: ClaimChallengeInput
@@ -528,15 +497,7 @@ export async function getWeeklyChallengesAction(): Promise<{
 // -----------------------------------------------------------------------------
 // Server Action: updateNotificationPreferencesAction
 // -----------------------------------------------------------------------------
-export const updateNotificationPreferencesSchema = z.object({
-  notification_email_comeback: z.boolean().optional(),
-  notification_email_weekly_recap: z.boolean().optional(),
-  email: z.string().email("Invalid email format").optional(),
-});
 
-export type UpdateNotificationPreferencesInput = z.infer<
-  typeof updateNotificationPreferencesSchema
->;
 
 export async function updateNotificationPreferencesAction(
   input: UpdateNotificationPreferencesInput

@@ -9,7 +9,7 @@ vi.mock("@/lib/supabase/server", () => ({
 }));
 
 import { sanitizeRedirectUrl } from "@/lib/auth/redirect";
-import { createTaskInputSchema } from "@/lib/game/actions";
+import { createTaskInputSchema } from "@/lib/game/schemas";
 import { resetLocalFallbackStore } from "@/lib/rate-limit";
 import { NextRequest } from "next/server";
 

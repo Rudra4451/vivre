@@ -4,7 +4,7 @@ import {
   purchaseItemInputSchema,
   equipItemInputSchema,
   claimChallengeInputSchema,
-} from "@/lib/game/actions";
+} from "@/lib/game/schemas";
 
 describe("Attribute Radar, Weekly Challenges & Cosmetic Shop Economy", () => {
   describe("Weekly Challenge Bounds & Math", () => {
