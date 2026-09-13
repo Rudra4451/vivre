@@ -8,6 +8,7 @@ export interface EmptyStateProps {
   actionLabel?: string;
   onAction?: () => void;
   className?: string;
+  as?: "h2" | "h3" | "h4";
 }
 
 export function EmptyState({
@@ -17,6 +18,7 @@ export function EmptyState({
   actionLabel,
   onAction,
   className = "",
+  as: Component = "h3",
 }: EmptyStateProps) {
   return (
     <div
@@ -25,9 +27,9 @@ export function EmptyState({
       <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-atlas-line bg-atlas-surface text-xl text-atlas-muted mb-3 font-mono">
         {icon}
       </div>
-      <h3 className="font-display text-base font-bold text-atlas-ink">
+      <Component className="font-display text-base font-bold text-atlas-ink">
         {title}
-      </h3>
+      </Component>
       <p className="mt-1.5 max-w-sm text-xs text-atlas-muted leading-relaxed">
         {description}
       </p>

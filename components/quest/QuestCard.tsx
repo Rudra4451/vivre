@@ -67,11 +67,18 @@ export function QuestCard({
     }
 
     try {
-      // 3. Call Server Action with idempotency key (Animation DOES NOT start yet)
-      const response = await completeTask({
-        taskId: quest.id,
-        idempotencyKey,
-      });
+      // 3. Call Server Action with idempotency key and 12-second slow request timeout protection
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("NETWORK_TIMEOUT")), 12000)
+      );
+
+      const response = await Promise.race([
+        completeTask({
+          taskId: quest.id,
+          idempotencyKey,
+        }),
+        timeoutPromise,
+      ]);
 
       if (!response.success || !response.data) {
         setActiveError(response.error ?? "Failed to complete quest.");
@@ -119,8 +126,19 @@ export function QuestCard({
         });
       }
     } catch (err) {
-      console.error("[QuestCard] Completion network error:", err);
-      setActiveError("A network error occurred. Please try again.");
+      if (err instanceof Error && err.message === "NETWORK_TIMEOUT") {
+        console.warn("[QuestCard] Request timed out. Storing offline for sync.");
+        try {
+          await queueOfflineCompletion(quest.id, idempotencyKey);
+          setPendingSync(quest.id, true);
+          setActiveError("Network request timed out. Completion queued for offline sync.");
+        } catch {
+          setActiveError("Network request timed out. Please try again.");
+        }
+      } else {
+        console.error("[QuestCard] Completion network error:", err);
+        setActiveError("A network error occurred. Please try again.");
+      }
     } finally {
       finishCompleting(quest.id);
     }
@@ -200,7 +218,15 @@ export function QuestCard({
           variant={isCompletedToday ? "outline" : "secondary"}
           onClick={handleComplete}
           disabled={isLocked}
-          aria-label={`Complete quest: ${quest.title}`}
+          aria-label={
+            isCompletedToday
+              ? `Quest already completed today: ${quest.title}`
+              : isCompleting
+              ? `Transmitting completion for ${quest.title}...`
+              : `Complete quest: ${quest.title}`
+          }
+          aria-busy={isCompleting}
+          aria-pressed={isCompletedToday}
           className="text-xs"
         >
           {isCompleting ? (

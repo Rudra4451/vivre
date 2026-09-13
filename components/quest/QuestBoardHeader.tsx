@@ -77,7 +77,12 @@ export function QuestBoardHeader({
               <span className="text-atlas-reward font-bold">{currentXp}</span> / {xpToNext} XP ({xpProgressPercent}%)
             </span>
           </div>
-          <ProgressBar value={xpProgressPercent} variant="reward" size="md" />
+          <ProgressBar
+            value={xpProgressPercent}
+            label="Level ascension progress"
+            variant="reward"
+            size="md"
+          />
           <div className="flex justify-between text-[11px] text-atlas-muted font-mono">
             <span>Ascension to Level {level + 1}</span>
             <span>{Math.max(0, xpToNext - currentXp)} XP remaining</span>

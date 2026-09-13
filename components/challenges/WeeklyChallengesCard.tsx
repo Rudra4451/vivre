@@ -64,7 +64,7 @@ export function WeeklyChallengesCard({
         <div>
           <div className="flex items-center gap-2">
             <span className="text-[var(--atlas-reward)]">◈</span>
-            <CardTitle className="font-display text-sm font-bold tracking-wide text-[var(--atlas-ink)]">
+            <CardTitle as="h2" className="font-display text-sm font-bold tracking-wide text-[var(--atlas-ink)]">
               Weekly Celestial Directives
             </CardTitle>
           </div>
@@ -79,7 +79,7 @@ export function WeeklyChallengesCard({
       </div>
 
       {errorMsg && (
-        <div className="mt-3 text-xs text-[var(--atlas-danger)] bg-[var(--atlas-danger)]/10 border border-[var(--atlas-danger)]/30 rounded p-2 font-mono">
+        <div role="alert" aria-live="assertive" className="mt-3 text-xs text-[var(--atlas-danger)] bg-[var(--atlas-danger)]/10 border border-[var(--atlas-danger)]/30 rounded p-2 font-mono">
           {errorMsg}
         </div>
       )}
@@ -104,9 +104,9 @@ export function WeeklyChallengesCard({
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-display text-sm font-bold text-[var(--atlas-ink)]">
+                    <h3 className="font-display text-sm font-bold text-[var(--atlas-ink)]">
                       {c.title}
-                    </span>
+                    </h3>
                     {c.target_category && (
                       <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border border-[var(--atlas-line)] bg-[var(--atlas-bg)] text-[var(--atlas-muted)]">
                         {c.target_category}
@@ -137,6 +137,7 @@ export function WeeklyChallengesCard({
                   </div>
                   <ProgressBar
                     value={c.percent}
+                    label={`${c.title} progress`}
                     variant={c.completed ? "reward" : "default"}
                     size="sm"
                   />
@@ -155,6 +156,7 @@ export function WeeklyChallengesCard({
                       className="text-xs font-bold font-mono"
                       disabled={claimingId === c.id}
                       onClick={() => handleClaim(c)}
+                      aria-label={`Claim ${c.reward_rare_currency} Starlight Embers for ${c.title}`}
                     >
                       {claimingId === c.id ? "Claiming..." : "Claim Embers"}
                     </Button>

@@ -42,12 +42,12 @@ export default function LoginPage() {
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-display">Sign In</CardTitle>
+          <CardTitle as="h1" className="text-2xl font-display">Sign In</CardTitle>
           <CardDescription>Enter your credentials to access the command deck</CardDescription>
         </CardHeader>
 
         {error && (
-          <div className="mb-4 rounded-lg border border-[var(--atlas-danger)]/30 bg-[var(--atlas-danger)]/10 p-3 text-xs text-[var(--atlas-danger)]">
+          <div role="alert" className="mb-4 rounded-lg border border-[var(--atlas-danger)]/30 bg-[var(--atlas-danger)]/10 p-3 text-xs text-[var(--atlas-danger)]">
             {error}
           </div>
         )}

@@ -57,6 +57,10 @@ export const useUIStore = create<UIStoreState>((set) => {
         const next = !state.calmMode;
         try {
           localStorage.setItem(CALM_MODE_STORAGE_KEY, String(next));
+          if (typeof document !== "undefined") {
+            document.documentElement.dataset.calmMode = String(next);
+            document.documentElement.classList.toggle("calm-mode", next);
+          }
         } catch {}
         // Persist to database server-side asynchronously
         updateSoundSettingsAction({ calmMode: next }).catch(() => {});
@@ -66,6 +70,10 @@ export const useUIStore = create<UIStoreState>((set) => {
     setCalmMode: (enabled: boolean) => {
       try {
         localStorage.setItem(CALM_MODE_STORAGE_KEY, String(enabled));
+        if (typeof document !== "undefined") {
+          document.documentElement.dataset.calmMode = String(enabled);
+          document.documentElement.classList.toggle("calm-mode", enabled);
+        }
       } catch {}
       updateSoundSettingsAction({ calmMode: enabled }).catch(() => {});
       set({ calmMode: enabled });
@@ -75,6 +83,10 @@ export const useUIStore = create<UIStoreState>((set) => {
       try {
         localStorage.setItem(SOUND_STORAGE_KEY, String(soundEnabled));
         localStorage.setItem(CALM_MODE_STORAGE_KEY, String(calmMode));
+        if (typeof document !== "undefined") {
+          document.documentElement.dataset.calmMode = String(calmMode);
+          document.documentElement.classList.toggle("calm-mode", calmMode);
+        }
       } catch {}
       set({ soundEnabled, calmMode });
     },

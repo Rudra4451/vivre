@@ -249,6 +249,38 @@ export function AttributeRadarChart({
           </span>
         )}
       </div>
+
+      {/* Accessible Text Summary Table for Low Vision & Assistive Tech */}
+      <div
+        className="mt-3 w-full overflow-hidden rounded-lg border border-[var(--atlas-line)] bg-[var(--atlas-surface)] p-3 text-xs"
+        aria-label="Attribute text summary"
+      >
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--atlas-muted)]">
+            Attribute Telemetry Summary
+          </span>
+          <span className="font-mono text-[10px] text-[var(--atlas-muted)]">
+            Rank Milestone: {targetMax} pts
+          </span>
+        </div>
+        <div className="grid grid-cols-5 gap-1.5 text-center">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={`summary-${cat}`}
+              type="button"
+              onClick={() => onSelectCategory?.(cat)}
+              className="rounded bg-[var(--atlas-surface-elevated)] p-1.5 border border-[var(--atlas-line-subtle)] hover:border-[var(--atlas-muted)] transition-colors text-center focus-visible:ring-1 focus-visible:ring-[var(--atlas-ink)]"
+              aria-label={`${cat}: ${valueMap[cat]} points, ${Math.round((valueMap[cat] / targetMax) * 100)} percent`}
+            >
+              <div className="font-mono text-[10px] text-[var(--atlas-muted)] truncate">{cat}</div>
+              <div className="font-mono font-bold text-xs text-[var(--atlas-ink)]">{valueMap[cat]}</div>
+              <div className="font-mono text-[9px] text-[var(--atlas-reward)]">
+                {Math.round((valueMap[cat] / targetMax) * 100)}%
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

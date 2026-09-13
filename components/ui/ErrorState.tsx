@@ -17,6 +17,7 @@ export function ErrorState({
   return (
     <div
       role="alert"
+      aria-live="assertive"
       className={`rounded-xl border border-atlas-danger/40 bg-atlas-surface p-5 text-atlas-ink shadow-xs ${className}`}
     >
       <div className="flex items-start justify-between gap-4">

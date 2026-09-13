@@ -104,15 +104,21 @@ export function QuickAddQuest({ userId, onTaskAdded }: QuickAddQuestProps) {
   return (
     <form
       onSubmit={handleSubmit}
+      aria-label="Quick assign new quest"
       className="rounded-xl border border-atlas-line bg-atlas-surface p-4 sm:p-5 shadow-xs space-y-4"
     >
       <div className="flex flex-col sm:flex-row gap-3">
-        {/* Text Input */}
+        {/* Text Input with accessible label */}
         <div className="relative flex-1">
+          <label htmlFor="quick-add-title" className="sr-only">
+            New objective title
+          </label>
           <input
+            id="quick-add-title"
             type="text"
             value={title}
             onChange={handleTitleChange}
+            aria-label="New objective title"
             placeholder="Assign new objective (e.g. 5km morning run, Deep reading 30 min, Ship feature...)"
             disabled={isSubmitting}
             className="w-full rounded-lg border border-atlas-line bg-atlas-bg px-4 py-2 text-sm text-atlas-ink placeholder-atlas-muted/70 focus-visible:border-atlas-ink/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-atlas-ink/30 transition-colors"
@@ -131,6 +137,7 @@ export function QuickAddQuest({ userId, onTaskAdded }: QuickAddQuestProps) {
           size="md"
           disabled={isSubmitting || !title.trim()}
           className="shrink-0"
+          aria-label={isSubmitting ? "Assigning objective..." : "Assign objective to quest board"}
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
@@ -145,7 +152,11 @@ export function QuickAddQuest({ userId, onTaskAdded }: QuickAddQuestProps) {
 
       {/* Category Pills & Recurring Switch */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-atlas-line-subtle text-xs">
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div
+          role="group"
+          aria-label="Quadrant Selection"
+          className="flex flex-wrap items-center gap-1.5"
+        >
           <span className="text-atlas-muted mr-1 text-[11px] font-mono uppercase tracking-wider">
             Quadrant:
           </span>
@@ -156,8 +167,10 @@ export function QuickAddQuest({ userId, onTaskAdded }: QuickAddQuestProps) {
               <button
                 key={cat}
                 type="button"
+                aria-pressed={isSelected}
+                aria-label={`Select ${cat} quadrant, awards ${meta.baseXp} XP`}
                 onClick={() => handleCategoryClick(cat)}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md font-mono text-xs transition-all ${
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md font-mono text-xs transition-all focus-visible:ring-2 focus-visible:ring-atlas-ink/40 focus-visible:outline-none ${
                   isSelected
                     ? "bg-atlas-surface-elevated text-atlas-ink border border-atlas-line font-bold shadow-xs"
                     : "bg-atlas-surface text-atlas-muted hover:text-atlas-ink border border-transparent"
@@ -176,6 +189,7 @@ export function QuickAddQuest({ userId, onTaskAdded }: QuickAddQuestProps) {
           <input
             type="checkbox"
             checked={isRecurring}
+            aria-label="Make this objective a recurring routine"
             onChange={(e) => setIsRecurring(e.target.checked)}
             className="h-3.5 w-3.5 rounded border-atlas-line bg-atlas-bg text-atlas-ink focus:ring-atlas-ink"
           />

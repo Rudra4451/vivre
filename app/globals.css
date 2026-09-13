@@ -86,7 +86,7 @@ h1, h2, h3, h4, h5, h6, .font-display {
 }
 
 /* Reduced motion accessibility */
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (update: slow) {
   *,
   ::before,
   ::after {
@@ -96,3 +96,15 @@ h1, h2, h3, h4, h5, h6, .font-display {
     scroll-behavior: auto !important;
   }
 }
+
+/* Calm Mode global suppression of decorative movement */
+.calm-mode,
+.calm-mode *,
+[data-calm-mode="true"],
+[data-calm-mode="true"] * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+

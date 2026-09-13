@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { AuthoritativeProgressionState, AuthoritativeReversalState } from "@/types";
+import { useAnnouncementStore } from "./announcements";
 
 export interface ActiveUndoState {
   completionId: string;
@@ -106,6 +107,9 @@ export const useQuestBoardStore = create<QuestBoardStoreState>((set, get) => ({
   },
 
   setActiveError: (error: string | null) => {
+    if (error) {
+      useAnnouncementStore.getState().announce(error, "assertive");
+    }
     set({ activeError: error });
   },
 

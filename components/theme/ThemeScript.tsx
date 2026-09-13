@@ -22,6 +22,7 @@ export function ThemeScript() {
 
   return (
     <script
+      id="theme-script"
       dangerouslySetInnerHTML={{ __html: scriptContent }}
       suppressHydrationWarning
     />

@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUIStore } from "@/lib/game/store";
@@ -13,6 +14,11 @@ interface NavbarProps {
 export function Navbar({ isAuthenticated = false }: NavbarProps) {
   const router = useRouter();
   const { soundEnabled, toggleSound, calmMode, toggleCalmMode } = useUIStore();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -57,13 +63,14 @@ export function Navbar({ isAuthenticated = false }: NavbarProps) {
             size="sm"
             onClick={toggleCalmMode}
             aria-label="Toggle calm mode animation reduction"
+            suppressHydrationWarning
             className={`hidden md:inline-flex text-xs ${
-              calmMode
+              mounted && calmMode
                 ? "border border-atlas-reward/40 bg-atlas-reward-subtle text-atlas-reward font-semibold"
                 : "text-atlas-muted hover:text-atlas-ink"
             }`}
           >
-            {calmMode ? "🌿 Calm: On" : "🌿 Calm: Off"}
+            {mounted && calmMode ? "🌿 Calm: On" : "🌿 Calm: Off"}
           </Button>
 
           <Button
@@ -71,9 +78,10 @@ export function Navbar({ isAuthenticated = false }: NavbarProps) {
             size="sm"
             onClick={toggleSound}
             aria-label="Toggle audio effects"
+            suppressHydrationWarning
             className="hidden sm:inline-flex text-xs text-atlas-muted hover:text-atlas-ink"
           >
-            {soundEnabled ? "Audio: On" : "Audio: Muted"}
+            {mounted ? (soundEnabled ? "Audio: On" : "Audio: Muted") : "Audio: On"}
           </Button>
 
           {isAuthenticated ? (

@@ -640,6 +640,7 @@ export default function ShowcasePage() {
             <Badge
               variant={shouldReduceMotion ? "warning" : "default"}
               size="sm"
+              suppressHydrationWarning
             >
               Reduced Motion: {shouldReduceMotion ? "Active" : "Normal"}
             </Badge>
@@ -648,6 +649,7 @@ export default function ShowcasePage() {
               size="sm"
               variant={isCalmMode ? "reward" : "outline"}
               onClick={toggleCalmMode}
+              suppressHydrationWarning
               className="text-xs"
             >
               {isCalmMode ? "🌿 Calm Mode: ON" : "🌿 Calm Mode: OFF"}
@@ -657,6 +659,7 @@ export default function ShowcasePage() {
               size="sm"
               variant={soundEnabled ? "secondary" : "outline"}
               onClick={toggleSound}
+              suppressHydrationWarning
               className="text-xs"
             >
               {soundEnabled ? "🔊 Sound: ON" : "🔇 Sound: MUTED"}
@@ -814,10 +817,10 @@ export default function ShowcasePage() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant={soundEnabled ? "reward" : "outline"} size="sm">
+              <Badge variant={soundEnabled ? "reward" : "outline"} size="sm" suppressHydrationWarning>
                 Sound: {soundEnabled ? "Active" : "Muted"}
               </Badge>
-              <Badge variant={isCalmMode ? "warning" : "outline"} size="sm">
+              <Badge variant={isCalmMode ? "warning" : "outline"} size="sm" suppressHydrationWarning>
                 Calm: {isCalmMode ? "Filtering Active" : "Full"}
               </Badge>
             </div>

@@ -159,7 +159,7 @@ export function CosmeticShop({
         <div>
           <div className="flex items-center gap-2">
             <span className="text-[var(--atlas-reward)]">✧</span>
-            <CardTitle className="font-display text-base font-bold tracking-wide text-[var(--atlas-ink)]">
+            <CardTitle as="h2" className="font-display text-base font-bold tracking-wide text-[var(--atlas-ink)]">
               Cartographic Wardrobe & Cosmetics
             </CardTitle>
           </div>
@@ -189,6 +189,8 @@ export function CosmeticShop({
       {/* Notification Banner */}
       {statusMessage && (
         <div
+          role={statusMessage.type === "error" ? "alert" : "status"}
+          aria-live="polite"
           className={`mt-4 text-xs font-mono p-2.5 rounded border flex items-center justify-between ${
             statusMessage.type === "error"
               ? "bg-[var(--atlas-danger)]/10 border-[var(--atlas-danger)]/30 text-[var(--atlas-danger)]"
@@ -197,8 +199,10 @@ export function CosmeticShop({
         >
           <span>{statusMessage.text}</span>
           <button
+            type="button"
             onClick={() => setStatusMessage(null)}
-            className="text-[11px] underline opacity-70 hover:opacity-100"
+            aria-label="Dismiss notification message"
+            className="text-[11px] underline opacity-70 hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--atlas-ink)]"
           >
             Dismiss
           </button>
@@ -206,12 +210,19 @@ export function CosmeticShop({
       )}
 
       {/* Category Tabs */}
-      <div className="mt-5 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <div
+        role="tablist"
+        aria-label="Cosmetic categories"
+        className="mt-5 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none"
+      >
         {Object.entries(CATEGORY_LABELS).map(([key, { label, icon }]) => (
           <button
             key={key}
+            type="button"
+            role="tab"
+            aria-selected={selectedTab === key}
             onClick={() => setSelectedTab(key)}
-            className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-mono font-medium transition-all ${
+            className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-mono font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--atlas-ink)] ${
               selectedTab === key
                 ? "bg-[var(--atlas-ink)] text-[var(--atlas-bg)] font-bold shadow-xs"
                 : "border border-[var(--atlas-line)] bg-[var(--atlas-surface)] text-[var(--atlas-muted)] hover:text-[var(--atlas-ink)] hover:border-[var(--atlas-muted)]"
@@ -298,6 +309,13 @@ export function CosmeticShop({
                     className="text-xs font-mono"
                     disabled={isProcessing}
                     onClick={() => handleEquipToggle(ownedInv)}
+                    aria-label={
+                      isProcessing
+                        ? `Updating ${item.name}...`
+                        : isEquipped
+                        ? `Unequip ${item.name}`
+                        : `Equip ${item.name}`
+                    }
                   >
                     {isProcessing ? "Updating..." : isEquipped ? "Unequip" : "Equip"}
                   </Button>
@@ -308,6 +326,11 @@ export function CosmeticShop({
                     className="text-xs font-mono font-bold"
                     disabled={isProcessing}
                     onClick={() => handlePurchase(item)}
+                    aria-label={
+                      isProcessing
+                        ? `Unlocking ${item.name}...`
+                        : `Unlock ${item.name} for ${item.cost} ${isRare ? "Embers" : "Dust"}`
+                    }
                   >
                     {isProcessing ? "Unlocking..." : `Unlock`}
                   </Button>

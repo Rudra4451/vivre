@@ -150,7 +150,7 @@ export default async function CommandDeckPage() {
             <div className="flex items-center justify-between p-4 border-b border-[var(--atlas-line)] bg-[var(--atlas-surface)]">
               <div className="text-sm font-semibold text-[var(--atlas-ink)] flex items-center gap-1.5">
                 <span className="text-[var(--atlas-muted)]">✦</span>
-                <span className="font-display tracking-wide">Constellation Map</span>
+                <h2 className="font-display tracking-wide text-sm font-semibold">Constellation Map</h2>
               </div>
               <span className="text-[10px] font-mono text-[var(--atlas-muted)] bg-[var(--atlas-bg)] px-2 py-0.5 rounded border border-[var(--atlas-line)]">
                 Sector I
@@ -170,7 +170,7 @@ export default async function CommandDeckPage() {
           <Card className="p-5">
             <div className="flex items-center justify-between border-b border-[var(--atlas-line)] pb-3 mb-4">
               <div>
-                <CardTitle className="text-sm font-display tracking-wider">
+                <CardTitle as="h2" className="text-sm font-display tracking-wider">
                   Aspect Alignment
                 </CardTitle>
                 <CardDescription className="text-xs mt-0.5">

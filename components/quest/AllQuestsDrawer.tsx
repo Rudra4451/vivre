@@ -28,8 +28,9 @@ export function AllQuestsDrawer({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between rounded-xl border border-atlas-line bg-atlas-surface px-4 py-2.5 text-xs font-semibold text-atlas-ink hover:bg-atlas-surface-hover transition-all"
+        className="flex w-full items-center justify-between rounded-xl border border-atlas-line bg-atlas-surface px-4 py-2.5 text-xs font-semibold text-atlas-ink hover:bg-atlas-surface-hover transition-all focus-visible:ring-2 focus-visible:ring-atlas-ink/40 focus-visible:outline-none"
         aria-expanded={isOpen}
+        aria-controls="secondary-atlas-quests"
       >
         <span className="flex items-center gap-2">
           <span className="font-display">Secondary Atlas Log</span>
@@ -46,7 +47,7 @@ export function AllQuestsDrawer({
       </button>
 
       {isOpen && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+        <div id="secondary-atlas-quests" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
           {remainingQuests.map((quest) => (
             <QuestCard
               key={quest.id}

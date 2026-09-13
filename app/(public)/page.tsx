@@ -44,12 +44,13 @@ export default function PublicLandingPage() {
 
         {/* Feature Grid with Cartographic Engraving */}
         <div className="mx-auto mt-20 max-w-5xl">
+          <h2 className="sr-only">Core Cartographic Architecture</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             <Card>
               <div className="text-[10px] font-mono text-[var(--atlas-muted)] uppercase tracking-wider mb-2">
                 Section 01 · Codex
               </div>
-              <CardTitle className="text-base font-display">Authoritative Ledgers</CardTitle>
+              <CardTitle as="h3" className="text-base font-display">Authoritative Ledgers</CardTitle>
               <CardDescription className="mt-2 text-xs leading-relaxed">
                 Task completion transactions execute atomically inside PostgreSQL. No client-side
                 XP inflation or unverified progression.
@@ -60,7 +61,7 @@ export default function PublicLandingPage() {
               <div className="text-[10px] font-mono text-[var(--atlas-muted)] uppercase tracking-wider mb-2">
                 Section 02 · Dual-State
               </div>
-              <CardTitle className="text-base font-display">Night Sky & Star Atlas</CardTitle>
+              <CardTitle as="h3" className="text-base font-display">Night Sky & Star Atlas</CardTitle>
               <CardDescription className="mt-2 text-xs leading-relaxed">
                 Two authentic visual states of one living cosmos. Restrained ink and linework by day,
                 deep celestial observation by night.
@@ -71,7 +72,7 @@ export default function PublicLandingPage() {
               <div className="text-[10px] font-mono text-[var(--atlas-muted)] uppercase tracking-wider mb-2">
                 Section 03 · Celestial Map
               </div>
-              <CardTitle className="text-base font-display">3D Constellation Sphere</CardTitle>
+              <CardTitle as="h3" className="text-base font-display">3D Constellation Sphere</CardTitle>
               <CardDescription className="mt-2 text-xs leading-relaxed">
                 Interactive spatial star map powered by Three.js, projecting your discipline categories
                 into resonant celestial geometry.

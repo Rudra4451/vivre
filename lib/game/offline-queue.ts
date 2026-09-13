@@ -219,8 +219,17 @@ export async function syncOfflineQueue(
 
     // 2. Sync pending completions
     const pendingCompletions = await getPendingCompletions();
+    const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
 
     for (const item of pendingCompletions) {
+      // Evict stale requests queued more than 7 days ago
+      if (item.queuedAt && now - item.queuedAt > SEVEN_DAYS_MS) {
+        console.warn(`[Offline Sync] Discarding stale completion for task ${item.taskId}`);
+        await removePendingCompletion(item.idempotencyKey);
+        continue;
+      }
+
       try {
         const actualTaskId = idMap.get(item.taskId) || item.taskId;
         const res = await completeTask({
