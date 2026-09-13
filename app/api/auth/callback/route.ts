@@ -16,6 +16,35 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
+      // Ensure user profile exists for OAuth users (e.g. Google Sign In)
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("id", user.id)
+            .maybeSingle();
+
+          if (!profile) {
+            const rawName =
+              user.user_metadata?.full_name ||
+              user.user_metadata?.name ||
+              user.email?.split("@")[0] ||
+              "Cartographer";
+            const sanitizedUsername = `${rawName.replace(/[^a-zA-Z0-9_]/g, "_").slice(0, 15)}_${Math.random().toString(36).slice(2, 6)}`;
+
+            await supabase.from("profiles").insert({
+              id: user.id,
+              username: sanitizedUsername,
+              email: user.email,
+            });
+          }
+        }
+      } catch (profileErr) {
+        console.error("Profile check error in auth callback:", profileErr);
+      }
+
       // Route based on the type of auth flow
       if (type === "recovery") {
         // Password reset — redirect to update-password form

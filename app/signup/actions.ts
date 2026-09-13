@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { signupSchema } from "@/lib/validation/auth";
 import type { AuthActionResult } from "@/types";
 
@@ -26,7 +27,7 @@ export async function signupAction(formData: FormData): Promise<AuthActionResult
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: validation.data.email,
     password: validation.data.password,
     options: {
@@ -41,5 +42,25 @@ export async function signupAction(formData: FormData): Promise<AuthActionResult
     return { success: false, error: error.message };
   }
 
-  return { success: true };
+  // Auto-confirm newly registered user so they are immediately active
+  if (data?.user?.id) {
+    try {
+      const admin = createAdminClient();
+      await admin.auth.admin.updateUserById(data.user.id, { email_confirm: true });
+    } catch (adminErr) {
+      console.error("Auto-confirm on signup error:", adminErr);
+    }
+  }
+
+  // Immediately sign in user to set session cookies
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: validation.data.email,
+    password: validation.data.password,
+  });
+
+  if (signInError) {
+    return { success: true, redirectTo: "/login?registered=true" };
+  }
+
+  return { success: true, redirectTo: "/app" };
 }

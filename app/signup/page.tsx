@@ -2,16 +2,14 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { signupAction } from "./actions";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
 export default function SignupPage() {
-  const router = useRouter();
   const [error, setError] = React.useState<string | null>(null);
-  const [success, setSuccess] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -25,13 +23,15 @@ export default function SignupPage() {
 
       if (!result.success) {
         setError(result.error ?? "Registration failed");
+        setLoading(false);
         return;
       }
 
-      setSuccess(true);
+      if (result.redirectTo) {
+        window.location.href = result.redirectTo;
+      }
     } catch {
       setError("An unexpected error occurred during registration.");
-    } finally {
       setLoading(false);
     }
   }
@@ -50,20 +50,20 @@ export default function SignupPage() {
           </div>
         )}
 
-        {success ? (
-          <div className="space-y-4 text-center">
-            <div role="status" className="rounded-lg border border-[var(--atlas-success)]/30 bg-[var(--atlas-success)]/10 p-4 text-sm text-[var(--atlas-success)]">
-              Registration request initiated. Check your inbox to verify your coordinates.
+        <div className="space-y-4">
+          {/* Google OAuth Button */}
+          <GoogleSignInButton label="Continue with Google" onError={(err) => setError(err)} />
+
+          {/* Divider */}
+          <div className="relative my-4 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[var(--atlas-line)]" />
             </div>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => router.push("/login")}
-            >
-              Return to Sign In
-            </Button>
+            <span className="relative bg-[var(--atlas-surface)] px-3 text-[11px] uppercase tracking-wider text-[var(--atlas-muted)] font-mono">
+              or register with email
+            </span>
           </div>
-        ) : (
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               id="username"
@@ -95,15 +95,15 @@ export default function SignupPage() {
               autoComplete="new-password"
             />
 
-            <p className="text-[11px] text-[var(--atlas-muted)]">
-              Password must be at least 8 characters and include uppercase, lowercase, and numeric characters.
+            <p className="text-[11px] text-[var(--atlas-muted)] font-mono">
+              Password must be at least 8 characters and include uppercase, lowercase, and numbers.
             </p>
 
             <Button type="submit" variant="primary" className="w-full" disabled={loading}>
-              {loading ? "Registering..." : "Forge Callsign"}
+              {loading ? "Registering & Entering Deck..." : "Forge Callsign & Enter Deck"}
             </Button>
           </form>
-        )}
+        </div>
 
         <div className="mt-6 text-center text-xs text-[var(--atlas-muted)]">
           Already registered?{" "}
