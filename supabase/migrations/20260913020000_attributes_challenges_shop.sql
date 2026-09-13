@@ -387,7 +387,7 @@ begin
   end if;
 
   if v_completions < v_challenge.target_count then
-    raise exception 'Challenge requirement not met (% / % completed)' using errcode = '22000';
+    raise exception 'Challenge requirement not met (% / % completed)', v_completions, v_challenge.target_count using errcode = '22000';
   end if;
 
   -- 6. Update or Insert Progress
