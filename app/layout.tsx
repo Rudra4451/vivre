@@ -15,22 +15,60 @@ const cinzel = Cinzel({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
-  weight: ["400", "600", "700", "800"],
+  weight: ["400", "700"],
 });
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600", "700"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vivre.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     template: "%s | Vivre",
     default: "Vivre | Constellation Atlas",
   },
   description: "Server-authoritative personal star atlas and expedition platform.",
+  keywords: [
+    "star atlas",
+    "gamified productivity",
+    "constellations",
+    "celestial quests",
+    "habit tracking",
+    "astronomical journal",
+  ],
+  authors: [{ name: "Vivre Observatory" }],
+  creator: "Vivre Team",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: "Vivre",
+    title: "Vivre | Personal Constellation Atlas",
+    description: "Transform daily intentions into celestial constellations in an authoritative star atlas.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vivre | Personal Constellation Atlas",
+    description: "Transform daily intentions into celestial constellations in an authoritative star atlas.",
+    creator: "@vivre_atlas",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default async function RootLayout({

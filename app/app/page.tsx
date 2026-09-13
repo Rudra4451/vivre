@@ -4,13 +4,15 @@ import { StarMapShell } from "@/components/starmap/StarMapShell";
 import { AttributeRadarChart } from "@/components/attributes";
 import { WeeklyChallengesCard } from "@/components/challenges";
 import { CosmeticShop } from "@/components/shop";
+import { TrophyRoom } from "@/components/trophy";
 import { Card, CardTitle, CardDescription } from "@/components/ui/Card";
 import { QuestBoardHeader } from "@/components/quest/QuestBoardHeader";
 import { QuestBoard } from "@/components/quest/QuestBoard";
 import { Badge } from "@/components/ui/Badge";
 import { getLocalDateString } from "@/lib/game/progression";
 import { getAuthoritativeWeeklyChallenges } from "@/lib/game/weekly-challenges";
-import type { InventoryItemWithDetails, ShopItem } from "@/types";
+import { evaluateTrophies } from "@/lib/game/trophies";
+import type { InventoryItemWithDetails, ShopItem, UserTrophy } from "@/types";
 
 export default async function CommandDeckPage() {
   const user = await requireUser();
@@ -95,6 +97,32 @@ export default async function CommandDeckPage() {
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
+
+  // 7. Authoritative Trophy evaluation & progress
+  const { count: totalCompletionsCount } = await supabase
+    .from("task_completions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id);
+
+  const { data: userTrophiesData } = await supabase
+    .from("user_trophies")
+    .select("*")
+    .eq("user_id", user.id);
+
+  const { count: completedChallengesCount } = await supabase
+    .from("weekly_challenge_progress")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("completed", true);
+
+  const trophies = evaluateTrophies({
+    profile: defaultProfile,
+    attributes: attributes ?? [],
+    totalCompletionsCount: totalCompletionsCount ?? (todayCompletions?.length ?? 0),
+    inventoryCount: inventoryItems.length,
+    completedChallengesCount: completedChallengesCount ?? 0,
+    persistedTrophies: (userTrophiesData || []) as UserTrophy[],
+  });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
@@ -185,6 +213,11 @@ export default async function CommandDeckPage() {
             <AttributeRadarChart attributes={attributes ?? []} targetMax={50} />
           </Card>
         </div>
+      </div>
+
+      {/* Celestial Reliquary / Trophy Room (Stretch Experience) */}
+      <div className="pt-6 border-t border-[var(--atlas-line)]">
+        <TrophyRoom initialTrophies={trophies} />
       </div>
 
       {/* Cartographic Wardrobe & Cosmetic Shop (Cosmetics Only) */}

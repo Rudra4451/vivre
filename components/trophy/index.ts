@@ -1,0 +1,1 @@
+export { TrophyRoom } from "./TrophyRoom";

@@ -28,6 +28,8 @@ import { StarMapShell } from "@/components/starmap/StarMapShell";
 import { AttributeRadarChart } from "@/components/attributes";
 import { WeeklyChallengesCard } from "@/components/challenges";
 import { CosmeticShop } from "@/components/shop";
+import { TrophyRoom } from "@/components/trophy";
+import { evaluateTrophies } from "@/lib/game/trophies";
 
 const DEMO_WEEK_START = "2026-09-13T00:00:00.000Z";
 const DEMO_WEEK_END = "2026-09-20T00:00:00.000Z";
@@ -1250,6 +1252,60 @@ export default function ShowcasePage() {
               },
             },
           ]}
+        />
+      </section>
+
+      {/* SECTION 10: Celestial Reliquary / Trophy Room */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between border-b border-[var(--atlas-line)] pb-3">
+          <div>
+            <h2 className="text-xl font-display font-semibold tracking-wide text-[var(--atlas-ink)]">
+              10. Celestial Reliquary & Trophy Room
+            </h2>
+            <p className="text-xs text-[var(--atlas-muted)]">
+              Authoritative milestone tracking, tier categorizations, keyboard accessible modal inspections, and celestial haptic/audio responses.
+            </p>
+          </div>
+          <Badge variant="outline" size="sm">
+            Stretch Feature
+          </Badge>
+        </div>
+
+        <TrophyRoom
+          initialTrophies={evaluateTrophies({
+            profile: {
+              id: "demo-pilot",
+              username: "AtlasDemoPilot",
+              level: 5,
+              current_xp: 450,
+              soft_currency: 180,
+              rare_currency: 12,
+              current_streak: 7,
+              longest_streak: 14,
+              streak_shield_available: true,
+              streak_shield_refill_at: null,
+              last_completion_at: null,
+              timezone: "Asia/Kolkata",
+              theme_preference: "dark",
+              sound_enabled: true,
+              calm_mode: false,
+              email: "demo@vivre.app",
+              notification_email_comeback: true,
+              notification_email_weekly_recap: true,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+            attributes: [
+              { id: "1", user_id: "demo-pilot", name: "Body", value: 45 },
+              { id: "2", user_id: "demo-pilot", name: "Mind", value: 65 },
+              { id: "3", user_id: "demo-pilot", name: "Discipline", value: 80 },
+              { id: "4", user_id: "demo-pilot", name: "Craft", value: 55 },
+              { id: "5", user_id: "demo-pilot", name: "Spirit", value: 70 },
+            ],
+            totalCompletionsCount: 14,
+            inventoryCount: 2,
+            completedChallengesCount: 1,
+          })}
         />
       </section>
     </div>

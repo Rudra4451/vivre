@@ -442,11 +442,39 @@ export interface Database {
         };
         Relationships: [];
       };
+      user_trophies: {
+        Row: {
+          id: string;
+          user_id: string;
+          trophy_id: string;
+          unlocked_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          trophy_id: string;
+          unlocked_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          trophy_id?: string;
+          unlocked_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      record_user_trophy_v1: {
+        Args: {
+          p_user_id: string;
+          p_trophy_id: string;
+        };
+        Returns: boolean;
+      };
       complete_task_v1: {
         Args: {
           p_task_id: string;

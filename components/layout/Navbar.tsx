@@ -14,11 +14,11 @@ interface NavbarProps {
 export function Navbar({ isAuthenticated = false }: NavbarProps) {
   const router = useRouter();
   const { soundEnabled, toggleSound, calmMode, toggleCalmMode } = useUIStore();
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });

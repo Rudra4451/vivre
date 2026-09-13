@@ -139,49 +139,106 @@ Vivre tracks schema evolution using reproducible SQL migration files.
 
 ---
 
-## 8. Production Build Commands
+## 8. Production Deployment Guide
 
-Create an optimized production bundle and verify compile-time constraints:
+### Vercel Deployment
 
-```bash
-npm run build
-```
+1. **Push to Remote Repository**:
+   Ensure all changes are committed and pushed to GitHub or your Git provider.
 
-Start the production server:
+2. **Import Project into Vercel**:
+   - Create a new project in the [Vercel Dashboard](https://vercel.com).
+   - Select the `Vivre` repository.
+   - Framework preset: **Next.js**.
+   - Build command: `npm run build` (or Next.js default).
+   - Install command: `npm install`.
 
-```bash
-npm run start
-```
+3. **Configure Environment Variables in Vercel**:
+   In **Project Settings > Environment Variables**, add the following production variables:
+
+   | Variable | Type | Description |
+   | :--- | :--- | :--- |
+   | `NEXT_PUBLIC_SUPABASE_URL` | Public | Production Supabase Project URL (`https://<project-ref>.supabase.co`) |
+   | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public | Production Supabase Publishable Key (`sb_publishable_...`) |
+   | `SUPABASE_SECRET_KEY` | Secret | Production Supabase Secret Key (`sb_secret_...` server-only) |
+   | `NEXT_PUBLIC_APP_URL` | Public | Canonical production URL (e.g. `https://vivre.app`) |
+   | `RESEND_API_KEY` | Secret | Resend API Key for transactional notifications |
+   | `CRON_SECRET` | Secret | High-entropy secret for securing Vercel Cron endpoints |
+   | `UPSTASH_REDIS_REST_URL` | Secret | (Optional) Upstash Redis REST URL for distributed rate limiting |
+   | `UPSTASH_REDIS_REST_TOKEN` | Secret | (Optional) Upstash Redis token |
+
+4. **Deploy**:
+   Trigger the production deployment. Vercel automatically deploys edge functions, Server Components, and optimized static assets.
 
 ---
 
-## Project Structure Overview
+## 9. Production Database Setup (Supabase)
 
-```text
-├── app/
-│   ├── (public)/          # Public marketing & landing routes
-│   ├── login/             # PKCE authentication sign-in
-│   ├── signup/            # Account registration
-│   ├── app/               # Authenticated Command Deck dashboard
-│   ├── api/
-│   │   ├── health/        # System telemetry health-check
-│   │   └── auth/callback/ # PKCE code-for-session exchange
-│   ├── globals.css        # Tailwind CSS styles
-│   └── layout.tsx         # Root layout shell
-├── components/
-│   ├── ui/                # Base primitives (Button, Card, Input)
-│   ├── quest/             # Quest status & overview components
-│   ├── starmap/           # React Three Fiber 3D visualizer
-│   └── layout/            # Navbar & Footer
-├── lib/
-│   ├── supabase/          # Browser, Server, and Admin (server-only) clients
-│   ├── auth/              # Server-side authentication helpers
-│   ├── game/              # Authoritative contracts & Zustand store
-│   ├── validation/        # Zod validation schemas
-│   ├── rate-limit/        # Route rate limiting
-│   └── utils/             # Utility helpers (cn)
-├── emails/                # React Email templates
-├── types/                 # TypeScript domain and database types
-├── SECURITY.md            # Security architecture specifications
-└── README.md
+1. **Create Supabase Production Project**:
+   Create a new project in [Supabase Cloud](https://supabase.com).
+
+2. **Apply Production Migrations**:
+   Execute the version-controlled SQL migrations against your remote Supabase instance:
+   ```bash
+   # Link Supabase project (one-time)
+   npx supabase link --project-ref <your-project-ref>
+
+   # Push all migrations to remote production database
+   npx supabase db push
+   ```
+
+3. **Row Level Security (RLS) Verification**:
+   All 11 public schema tables have Row Level Security enabled. Verify policies in the Supabase dashboard or via SQL:
+   ```sql
+   select tablename, rowsecurity from pg_tables where schemaname = 'public';
+   ```
+
+4. **Demo Account Seeding (Optional / Staging Only)**:
+   To populate a clean staging or demonstration environment with sample directives and progression metrics:
+   ```bash
+   npx supabase db execute --file supabase/seed.sql
+   ```
+
+---
+
+## 10. Demo Account Credentials
+
+> **Notice**: The following credentials belong exclusively to the seeded, unprivileged demo account intended for automated smoke tests, preview reviews, and feature audits. Never use privileged or real production credentials in documentation.
+
+- **Email**: `demo@vivre.app`
+- **Password**: `VivrePilot2026!`
+- **Callsign**: `AtlasDemoPilot`
+- **Initial State**: Level 5, 450 XP, 180 Starlight, 12 Astral Shards, 7-day streak.
+
+---
+
+## 11. Production Health Check & Monitoring
+
+Vivre provides an authoritative health check endpoint at `/api/health` that validates both Next.js server runtime and live Supabase database connectivity:
+
+```bash
+curl -i https://your-production-domain.com/api/health
 ```
+
+**Expected JSON Response (200 OK)**:
+```json
+{
+  "status": "ok",
+  "uptime": 1420,
+  "timestamp": "2026-09-13T11:30:00.000Z",
+  "version": "0.1.0",
+  "database": "connected"
+}
+```
+
+External monitoring services (e.g. BetterStack, Datadog, or UptimeRobot) can monitor this URL with a 30s interval. If database connectivity is disrupted, the route returns `"status": "degraded"` or HTTP 503.
+
+---
+
+## 12. Performance & Architecture Standards
+
+- **Server Components by Default**: Pages and layout shells are React Server Components with zero hydration overhead.
+- **Dynamic 3D Code Splitting**: Three.js and `@react-three/fiber` bundles are isolated in asynchronous client chunks and dynamically loaded with Suspense fallbacks. No WebGL code enters the critical initial page bundle.
+- **Demand Frameloop**: WebGL canvases run with `frameloop="demand"`, rendering strictly on interaction or state changes, automatically pausing when scrolled out of view or tab is hidden.
+- **Font Subsetting**: Google Fonts (`Cinzel` and `Plus Jakarta Sans`) load strictly necessary weights with `display: swap`.
+- **Dynamic SEO**: Dynamic OpenGraph images, Favicon, `robots.txt`, and `sitemap.xml` are built natively with Next.js 16 metadata conventions.

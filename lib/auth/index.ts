@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { User } from "@supabase/supabase-js";
@@ -5,8 +6,9 @@ import type { User } from "@supabase/supabase-js";
 /**
  * Retrieve the current authenticated user using the server client.
  * Safe to call in Server Components and Route Handlers.
+ * Memoized per-request using React cache.
  */
-export async function getCurrentUser(): Promise<User | null> {
+export const getCurrentUser = cache(async (): Promise<User | null> => {
   try {
     const supabase = await createClient();
     const {
@@ -22,7 +24,7 @@ export async function getCurrentUser(): Promise<User | null> {
   } catch {
     return null;
   }
-}
+});
 
 /**
  * Require an authenticated user; redirects to login page if unauthenticated.

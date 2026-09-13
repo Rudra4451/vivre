@@ -2,12 +2,14 @@ import type { Database } from "./database.types";
 
 // --- Table Row Types ---
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+export type UserProfile = Profile;
 export type Attribute = Database["public"]["Tables"]["attributes"]["Row"];
 export type Task = Database["public"]["Tables"]["tasks"]["Row"];
 export type TaskCompletion = Database["public"]["Tables"]["task_completions"]["Row"];
 export type ShopItem = Database["public"]["Tables"]["shop_items"]["Row"];
 export type InventoryItem = Database["public"]["Tables"]["inventory"]["Row"];
 export type CompletionReversal = Database["public"]["Tables"]["completion_reversals"]["Row"];
+export type UserTrophyRow = Database["public"]["Tables"]["user_trophies"]["Row"];
 
 // --- Insert Types ---
 export type TaskInsert = Database["public"]["Tables"]["tasks"]["Insert"];
@@ -25,6 +27,7 @@ export interface HealthCheckResponse {
   uptime: number;
   timestamp: string;
   version: string;
+  database?: "connected" | "disconnected";
 }
 
 // --- Auth Action Results ---
@@ -214,3 +217,32 @@ export interface NotificationEligibilityResult {
   weekly_challenge_incomplete?: boolean;
   incomplete_challenges_count?: number;
 }
+
+// --- Trophy Room & Celestial Reliquary ---
+export type TrophyTier = "astral" | "lunar" | "solar" | "celestial";
+
+export interface TrophyDefinition {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  tier: TrophyTier;
+  icon: string;
+  category: "progression" | "streak" | "mastery" | "exploration";
+  targetValue: number;
+}
+
+export interface UserTrophy {
+  id: string;
+  user_id: string;
+  trophy_id: string;
+  unlocked_at: string;
+}
+
+export interface TrophyWithProgress extends TrophyDefinition {
+  isUnlocked: boolean;
+  unlockedAt: string | null;
+  currentValue: number;
+  progressPercent: number;
+}
+

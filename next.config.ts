@@ -32,6 +32,16 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: [
+      "@react-three/drei",
+      "three",
+      "howler",
+      "framer-motion",
+      "lucide-react",
+    ],
+  },
+  serverExternalPackages: ["resend", "@react-email/components"],
   async headers() {
     return [
       {
