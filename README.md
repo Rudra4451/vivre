@@ -15,10 +15,12 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Team-Orbit-blueviolet?style=flat-square" alt="Team Orbit" />
-  <img src="https://img.shields.io/badge/Tests-132_passing-brightgreen?style=flat-square" alt="132 Tests" />
-  <img src="https://img.shields.io/badge/Files-135-blue?style=flat-square" alt="135 Files" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
+  <a href="https://vivre-five.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/Live_Demo-vivre--five.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
+  <img src="https://img.shields.io/badge/Team-Orbit-blueviolet?style=for-the-badge" alt="Team Orbit" />
+  <img src="https://img.shields.io/badge/Tests-132_passing-brightgreen?style=for-the-badge" alt="132 Tests" />
+  <img src="https://img.shields.io/badge/Database-Connected-success?style=for-the-badge&logo=supabase" alt="Database Connected" />
 </p>
 
 ---
