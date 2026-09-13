@@ -18,6 +18,9 @@
   <a href="https://vivre-five.vercel.app" target="_blank">
     <img src="https://img.shields.io/badge/Live_Demo-vivre--five.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
   </a>
+  <a href="https://vivre-five.vercel.app/demo.mp4" target="_blank">
+    <img src="https://img.shields.io/badge/Demo_Video-Watch_MP4-E50914?style=for-the-badge&logo=google-play&logoColor=white" alt="Watch Demo Video" />
+  </a>
   <img src="https://img.shields.io/badge/Team-Orbit-blueviolet?style=for-the-badge" alt="Team Orbit" />
   <img src="https://img.shields.io/badge/Tests-132_passing-brightgreen?style=for-the-badge" alt="132 Tests" />
   <img src="https://img.shields.io/badge/Database-Connected-success?style=for-the-badge&logo=supabase" alt="Database Connected" />

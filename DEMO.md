@@ -10,6 +10,10 @@
 
 ## 📹 Full Video Demonstration
 
+- **🎥 High-Definition MP4 Video (Direct Play / Download):** [`public/demo.mp4`](./public/demo.mp4)  
+- **🌐 Production Video URL:** [https://vivre-five.vercel.app/demo.mp4](https://vivre-five.vercel.app/demo.mp4)  
+- **🖼️ Animated WebP Preview:** [`public/demo.webp`](./public/demo.webp)
+
 ![Vivre Platform Demonstration Video](./public/demo.webp)
 
 ---
