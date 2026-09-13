@@ -8,6 +8,12 @@
 
 ---
 
+## 📹 Full Video Demonstration
+
+![Vivre Platform Demonstration Video](./public/demo.webp)
+
+---
+
 ## 🎬 1. Deterministic 2-Minute Demo Flow for Judges
 
 | Step | Screen | Action | What to Highlight |
